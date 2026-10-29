@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+		"Anthropic.claude-code",
+		"charliermarsh.ruff",
+		"DavidAnson.vscode-markdownlint",
+        "ms-python.python",
+		"ms-python.vscode-pylance",
+		"ms-vscode-remote.remote-containers",
+	]
+}
