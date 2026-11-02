@@ -1,0 +1,38 @@
+info:
+  name: Marketplace API
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    Automate selling on the PriceCharting Marketplace.
+
+    Prices are integer pennies. Throttle `/api/offers` requests to the same URL to once per 5 minutes.
+
+    #### `offer-status` values
+    `available`, `sold`, `ended`, `pending` (vacation hold or payment issue, see `pending-reason`), `collection`
+
+    #### Condition IDs (`condition-id`)
+
+    | ID | Video Games | Cards | Comics | Coins |
+    |---|---|---|---|---|
+    | 1 | Loose | Ungraded | Ungraded | Ungraded |
+    | 2 | New & Sealed | Grade 8 | 6.0 | AU (50-58) |
+    | 3 | CIB | Grade 7 | 4.0 | VF (20-35) |
+    | 5 | Graded | Grade 9 | 8.0 | MS62 |
+    | 6 | Box only | Grade 9.5 | 9.2 | MS64 |
+    | 7 | Manual only | Grade 10 | 9.8 | MS66 |
+    | 8 | Item and Box | BGS 10 | 10.0 | F (12-15) |
+    | 9 | Item and Manual | Grade 1 | 2.0 | XF (40-45) |
+    | 10 | Box and Manual | Grade 2 | 9.6 | MS60 |
+    | 13 | Graded CIB | Grade 3 | 3.0 | MS61 |
+
+    #### Genres
+    Accessories, Action & Adventure, Arcade, Baseball, Beat'em Up, Basketball, Board & Card, Casino, Compilation, Controllers, Dance, Demo & NFR, Extreme Sports, Educational, Fighting, Football, FPS, Golf, Hack and Slash, Horror, Light Gun, Magazine, Mini Games, Movie, Music, Other, Party, Pinball, Platformer, Puzzle, Racing, RPG, Simulation, Shoot'em Up, Soccer, Sports, Strategy, Systems, Third Person Shooter, Trivia, Visual Novel, Wrestling
+
+    #### Console IDs
+    e.g. `G17` NES, `G13` Super Nintendo, `G11` Wii, `G59` Nintendo Switch. Full table: https://www.pricecharting.com/api-documentation
+  type: text/markdown

@@ -1,0 +1,1020 @@
+openapi: 3.1.0
+
+info:
+  title: PriceCharting API
+  version: v1
+  description: |-
+    APIs for PriceCharting, including the Prices API to get current item prices and the
+    Marketplace API to automate finding and selling items on the Marketplace.
+
+    - Requests are made over HTTPS and responses are JSON with liberal CORS headers.
+    - Authenticate with your 40-character subscription token as the `t` parameter.
+      `GET` requests take it in the query string; `POST` requests take it in the form body.
+    - Dates are `YYYY-MM-DD` strings. Zero-value dates such as `0001-01-01` mean "not set".
+    - Prices are integer pennies ($17.32 = `1732`).
+    - Every response has a `status` of `success` or `error`. Errors use a 4xx/5xx HTTP code
+      and include an `error-message`.
+
+    **Limits:** 1 call per second. Throttle `/api/offers` requests to the same URL to once
+    per 5 minutes. CSV downloads are limited to one every 10 minutes.
+
+    **Usage:** API and CSV data are licensed for internal use only. Sharing data with third
+    parties requires a commercial license. All data must be purged when your subscription ends.
+
+externalDocs:
+  url: https://www.pricecharting.com/api-documentation
+
+servers:
+  - url: https://www.pricecharting.com
+
+security:
+  - token: []
+
+tags:
+  - name: Prices
+    description: Read-only access to current prices. Historic prices and sales are not supported.
+  - name: Marketplace
+    description: Automate selling on the PriceCharting Marketplace.
+
+paths:
+  /api/product:
+    get:
+      tags: [Prices]
+      operationId: getProduct
+      summary: Get a single product
+      description: |-
+        Returns data about a single product. The response is equivalent to a single row in the
+        CSV price guide, and the JSON keys match the CSV column names.
+
+        Specify the product with exactly one of `id`, `upc`, or `q`.
+      parameters:
+        - name: id
+          in: query
+          description: PriceCharting product ID.
+          schema:
+            type: string
+          example: "6910"
+        - name: upc
+          in: query
+          description: UPC barcode. First and second generation games rarely have one.
+          schema:
+            type: string
+          example: "045496830434"
+        - name: q
+          in: query
+          description: Full text search on title and/or console. Only the best match is returned.
+          schema:
+            type: string
+          example: earthbound
+      responses:
+        "200":
+          description: The matching product.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+              example:
+                status: success
+                cib-price: 42995
+                console-name: Super Nintendo
+                id: "6910"
+                loose-price: 17244
+                new-price: 53000
+                product-name: EarthBound
+                release-date: "1995-06-05"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/products:
+    get:
+      tags: [Prices]
+      operationId: searchProducts
+      summary: Search products
+      description: Returns up to the first 20 products matching a full text search.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Full text search on title and/or console.
+          schema:
+            type: string
+          examples:
+            console:
+              value: chrono trigger super nintendo
+            short:
+              value: mario n64
+            card:
+              value: "charizard #4"
+      responses:
+        "200":
+          description: Matching products.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductsResponse"
+              example:
+                status: success
+                products:
+                  - console-name: Playstation
+                    id: "4801"
+                    product-name: Tactics Ogre
+                  - console-name: GameBoy Advance
+                    id: "2611"
+                    product-name: Tactics Ogre
+                  - console-name: PSP
+                    id: "30988"
+                    product-name: "Tactics Ogre: Let Us Cling Together"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offers:
+    get:
+      tags: [Marketplace]
+      operationId: listOffers
+      summary: List offers
+      description: Returns offers matching the given filters.
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [available, sold, ended, collection]
+        - name: seller
+          in: query
+          description: Seller user ID.
+          schema:
+            type: string
+          example: 7cgdyu5ynzos3mxwhfh46xj3f4
+        - name: buyer
+          in: query
+          description: Buyer user ID.
+          schema:
+            type: string
+          example: 7cgdyu5ynzos3mxwhfh46xj3f4
+        - name: console
+          in: query
+          description: Console ID, e.g. `G17` for NES.
+          schema:
+            type: string
+          example: G17
+        - name: condition-id
+          in: query
+          description: Condition ID. See `ConditionId`.
+          schema:
+            $ref: "#/components/schemas/ConditionId"
+        - name: genre
+          in: query
+          description: Genre name, e.g. `Football`.
+          schema:
+            type: string
+          example: Football
+        - name: id
+          in: query
+          description: PriceCharting product ID.
+          schema:
+            type: string
+          example: "6910"
+        - name: sort
+          in: query
+          description: "`name` (alphabetical), `starts` (newest listings), or `lowest-price`."
+          schema:
+            type: string
+            enum: [name, starts, lowest-price]
+      responses:
+        "200":
+          description: Matching offers.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OffersResponse"
+              example:
+                status: success
+                offers:
+                  - condition-string: Normal wear
+                    console-name: NES
+                    ended-time: "2017-10-31"
+                    id: 9307
+                    include-string: Game only
+                    is-available: false
+                    is-ended: true
+                    is-shipped: false
+                    is-sold: true
+                    offer-id: smzksacsy5i2dsrddxsrlzsp6i
+                    offer-status: sold
+                    offer-url: /offer/smzksacsy5i2dsrddxsrlzsp6i
+                    price: 1473
+                    product-name: M.C. Kids
+                    sale-time: "2017-10-31"
+                    shipped-time: "0001-01-01"
+                  - cert-id: "5672930123"
+                    condition-string: Scratched,Writing
+                    console-name: NES
+                    ended-time: "2017-10-30"
+                    grade-co-id: 1
+                    id: 9729
+                    include-string: Game, Box, and Manual
+                    is-available: false
+                    is-ended: true
+                    is-shipped: true
+                    is-sold: true
+                    offer-id: nw6asacmsbvvoq5yeyrkvzcdky
+                    offer-status: sold
+                    offer-url: /offer/nw6asacmsbvvoq5yeyrkvzcdky
+                    price: 6281
+                    product-name: Shatterhand
+                    sale-time: "2017-10-30"
+                    shipped-time: "2017-10-31"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offer-details:
+    get:
+      tags: [Marketplace]
+      operationId: getOfferDetails
+      summary: Get offer details
+      description: Full details for one offer, including buyer shipping info after a sale.
+      parameters:
+        - name: offer-id
+          in: query
+          required: true
+          schema:
+            type: string
+          example: vtdsww72uyslgooawzyyijsllm
+      responses:
+        "200":
+          description: The offer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfferDetails"
+              example:
+                status: success
+                buyer:
+                  buyer-email: buyer@example.com
+                  shipping-city: Anytown
+                  shipping-country: United States
+                  shipping-line1: 123 Smith St
+                  shipping-line2: ""
+                  shipping-name: John Doe
+                  shipping-state: NY
+                  shipping-zip: 00000-0000
+                buyer-left-feedback: true
+                condition: Normal wear
+                console-name: Super Nintendo
+                cost-basis: 125
+                ended-time: "2017-10-31"
+                has-pictures: true
+                id: 7000
+                includes: Game only
+                is-collection: false
+                is-ended: true
+                is-price-descending: true
+                is-refunded: false
+                is-shipped: true
+                is-sold: true
+                max-price: 12000
+                min-price: 10000
+                offer-id: vtdsww72uyslgooawzyyijsllm
+                offer-status: sold
+                offer-url: /offer/vtdsww72uyslgooawzyyijsllm
+                price: 11281
+                product-name: Mega Man 7
+                refunded-time: "0001-01-01"
+                sale-time: "2017-10-31"
+                seller-left-feedback: true
+                shipped-time: "2017-10-31"
+                shipping-premium: 0
+                sku: ""
+                start-time: "2017-10-20"
+                tracking-number: "9400111234567890000000"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offer-publish:
+    post:
+      tags: [Marketplace]
+      operationId: publishOffer
+      summary: Publish or edit an offer
+      description: |-
+        Publishes a new offer, or edits an existing one when `offer-id` is given.
+
+        Provide exactly one identifier: `product`, `upc`, `asin`, `epid`, or `offer-id`.
+
+        Condition tags (`broken`, `pristine`, `scratch`, `stickers`, `tear`, `writing`) are
+        set to `on`. With no tags, the listing shows "Normal wear". `pristine` displays as
+        "No blemishes" and excludes all other tags except `new`.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [t, condition-id, price-max]
+              properties:
+                t:
+                  $ref: "#/components/schemas/Token"
+                product:
+                  type: string
+                  description: PriceCharting product ID. Creates a new listing.
+                  example: "9331"
+                upc:
+                  type: string
+                  description: UPC. Creates a new listing.
+                  example: "045496630348"
+                asin:
+                  type: string
+                  description: Amazon ASIN. Creates a new listing.
+                  example: B00004SVYF
+                epid:
+                  type: string
+                  description: eBay ePID. Creates a new listing.
+                  example: "6088"
+                offer-id:
+                  type: string
+                  description: Existing offer ID. Edits that offer.
+                  example: vtdsww72uyslgooawzyyijsllm
+                price-max:
+                  type: integer
+                  description: Price in pennies. Starting price when `price-min` is also set.
+                  example: 901
+                price-min:
+                  type: integer
+                  description: >-
+                    Minimum price in pennies. Makes the listing a reverse auction whose price
+                    drops over 30 days from `price-max` until it reaches `price-min` or sells.
+                condition-id:
+                  $ref: "#/components/schemas/ConditionId"
+                add-to-collection:
+                  $ref: "#/components/schemas/On"
+                cost-basis:
+                  type: integer
+                  description: Price you paid, in pennies.
+                description:
+                  type: string
+                  maxLength: 300
+                sku:
+                  type: string
+                  maxLength: 64
+                  pattern: "^[A-Za-z0-9]*$"
+                  description: Internal SKU. Must be unique among active listings.
+                  example: 123abc
+                quantity:
+                  type: integer
+                  default: 1
+                  description: Copies owned. Collections only.
+                broken:
+                  $ref: "#/components/schemas/On"
+                pristine:
+                  $ref: "#/components/schemas/On"
+                scratch:
+                  $ref: "#/components/schemas/On"
+                stickers:
+                  $ref: "#/components/schemas/On"
+                tear:
+                  $ref: "#/components/schemas/On"
+                writing:
+                  $ref: "#/components/schemas/On"
+                photo1:
+                  $ref: "#/components/schemas/PhotoUrl"
+                photo2:
+                  $ref: "#/components/schemas/PhotoUrl"
+                photo3:
+                  $ref: "#/components/schemas/PhotoUrl"
+                photo4:
+                  $ref: "#/components/schemas/PhotoUrl"
+                photo5:
+                  $ref: "#/components/schemas/PhotoUrl"
+                photo6:
+                  $ref: "#/components/schemas/PhotoUrl"
+      responses:
+        "200":
+          description: The published offer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishResponse"
+              example:
+                status: success
+                cost-basis: 125
+                offer-id: ccirsewk5mdnoest7xkryagimy
+                offer-url: /offer/ccirsewk5mdnoest7xkryagimy
+                offer-status: available
+                product-name: Metroid
+                console-name: NES
+                condition-string: Scratches, Writing
+                include-string: Game, Box
+                has-pictures: false
+                price: 901
+                sku: 123abc
+                is-collection: false
+                start-time: "2017-11-03"
+                quantity: 1
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offer-feedback:
+    post:
+      tags: [Marketplace]
+      operationId: leaveOfferFeedback
+      summary: Leave feedback on an offer
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [t, offer-id, rating]
+              properties:
+                t:
+                  $ref: "#/components/schemas/Token"
+                offer-id:
+                  type: string
+                  example: vtdsww72uyslgooawzyyijsllm
+                rating:
+                  $ref: "#/components/schemas/Rating"
+                comment:
+                  type: string
+                  example: Great buyer
+      responses:
+        "200":
+          description: The feedback left.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackResponse"
+              example:
+                status: success
+                offer-id: vtdsww72uyslgooawzyyijsllm
+                rating: 2
+                comment: Great buyer
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offer-ship:
+    post:
+      tags: [Marketplace]
+      operationId: shipOffer
+      summary: Mark an offer as shipped
+      description: >-
+        A valid tracking number can earn the seller positive feedback if the buyer leaves none,
+        but tracking must show shipment within 3 days and delivery to the buyer's address.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [t, offer-id]
+              properties:
+                t:
+                  $ref: "#/components/schemas/Token"
+                offer-id:
+                  type: string
+                  example: vtdsww72uyslgooawzyyijsllm
+                tracking-number:
+                  type: string
+                  description: USPS, FedEx, UPS, or other tracking number. Omit if unavailable.
+                  example: "901234567890000"
+      responses:
+        "200":
+          description: The shipped offer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipResponse"
+              example:
+                status: success
+                offer-id: vtdsww72uyslgooawzyyijsllm
+                is-shipped: true
+                shipped-time: "2017-10-31"
+                tracking-number: "901234567890000"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offer-end:
+    post:
+      tags: [Marketplace]
+      operationId: endOffer
+      summary: End an offer
+      description: >-
+        Ends an offer so it can no longer be purchased. For collection items, this removes the
+        item from the collection.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/OfferIdForm"
+      responses:
+        "200":
+          description: The ended offer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EndResponse"
+              example:
+                status: success
+                offer-id: vtdsww72uyslgooawzyyijsllm
+                is-ended: true
+                ended-time: "2017-10-31"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+  /api/offer-refund:
+    post:
+      tags: [Marketplace]
+      operationId: refundOffer
+      summary: Refund a purchased offer
+      description: Payment is returned immediately from the seller's PayPal account to the buyer.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/OfferIdForm"
+      responses:
+        "200":
+          description: The refunded offer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundResponse"
+              example:
+                status: success
+                offer-id: vtdsww72uyslgooawzyyijsllm
+                is-refunded: true
+                refunded-time: "2017-10-31"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+
+components:
+  securitySchemes:
+    token:
+      type: apiKey
+      in: query
+      name: t
+      description: 40-character subscription token from the Subscriptions page ("API/Download").
+
+  responses:
+    Error:
+      description: The request failed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Token:
+      type: string
+      description: 40-character subscription token.
+      minLength: 40
+      maxLength: 40
+
+    On:
+      type: string
+      enum: ["on"]
+
+    PhotoUrl:
+      type: string
+      format: uri
+      description: JPG or PNG photo URL.
+
+    Date:
+      type: string
+      description: "`YYYY-MM-DD`. `0001-01-01` means not set."
+      example: "2017-10-31"
+
+    Pennies:
+      type: integer
+      description: Price in pennies.
+
+    ConditionId:
+      type: integer
+      enum: [1, 2, 3, 5, 6, 7, 8, 9, 10, 13]
+      description: |-
+        | ID | Video Games | Cards | Comics | Coins |
+        |---|---|---|---|---|
+        | 1 | Loose | Ungraded | Ungraded | Ungraded |
+        | 2 | New & Sealed | Grade 8 | 6.0 | AU (50-58) |
+        | 3 | CIB | Grade 7 | 4.0 | VF (20-35) |
+        | 5 | Graded | Grade 9 | 8.0 | MS62 |
+        | 6 | Box only | Grade 9.5 | 9.2 | MS64 |
+        | 7 | Manual only | Grade 10 | 9.8 | MS66 |
+        | 8 | Item and Box | BGS 10 | 10.0 | F (12-15) |
+        | 9 | Item and Manual | Grade 1 | 2.0 | XF (40-45) |
+        | 10 | Box and Manual | Grade 2 | 9.6 | MS60 |
+        | 13 | Graded CIB | Grade 3 | 3.0 | MS61 |
+
+    Rating:
+      type: integer
+      enum: [2, 1, 0, -1, -2]
+      description: "`2` Great, `1` Good, `0` Ok, `-1` Bad, `-2` Awful."
+
+    OfferStatus:
+      type: string
+      enum: [available, sold, ended, pending, collection]
+      description: "`pending` means a vacation hold or payment issue; see `pending-reason`."
+
+    Status:
+      type: string
+      enum: [success, error]
+
+    Error:
+      type: object
+      required: [status, error-message]
+      properties:
+        status:
+          type: string
+          const: error
+        error-message:
+          type: string
+
+    Product:
+      type: object
+      description: >-
+        Price keys mean different conditions for video games, trading cards, and comics.
+        Descriptions list video games / cards / comics.
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        id:
+          type: string
+          description: PriceCharting product ID.
+        product-name:
+          type: string
+        console-name:
+          type: string
+        genre:
+          type: string
+          example: RPG
+        release-date:
+          $ref: "#/components/schemas/Date"
+        upc:
+          type: string
+        asin:
+          type: string
+          description: Amazon ASIN.
+        epid:
+          type: string
+          description: eBay ePID.
+        tcg-id:
+          type: string
+          description: TCGplayer ID. Trading cards only.
+        sales-volume:
+          type: integer
+          description: Yearly units sold.
+        loose-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Item only / ungraded / ungraded.
+        cib-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Item with box and manual / grade 7-7.5 / 4.0-4.5.
+        new-price:
+          $ref: "#/components/schemas/Pennies"
+          description: New and sealed / grade 8-8.5 / 6.0-6.5.
+        graded-price:
+          $ref: "#/components/schemas/Pennies"
+          description: New, graded by WATA or VGA / grade 9 / 8.0-8.5.
+        box-only-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Box only / grade 9.5 / 9.2.
+        manual-only-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Manual only / PSA 10 / 9.8.
+        bgs-10-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards BGS 10 / comics 10.0.
+        condition-9-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards grade 1 / comics 2.0.
+        condition-10-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards grade 2 / comics 9.6.
+        condition-13-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards grade 3 / comics 3.0.
+        condition-14-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards grade 4 / comics 5.0.
+        condition-15-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards grade 5 / comics 7.0.
+        condition-16-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards grade 6 / comics 9.0.
+        condition-17-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards CGC 10 / comics 9.4.
+        condition-18-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards SGC 10.
+        condition-19-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards CGC 10 Pristine.
+        condition-20-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards BGS 10 Black.
+        condition-21-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards TAG 10.
+        condition-22-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Cards ACE 10.
+        gamestop-price:
+          $ref: "#/components/schemas/Pennies"
+          description: GameStop pre-owned price. Only for consoles GameStop sells or trades.
+        retail-loose-buy:
+          $ref: "#/components/schemas/Pennies"
+        retail-loose-sell:
+          $ref: "#/components/schemas/Pennies"
+        retail-cib-buy:
+          $ref: "#/components/schemas/Pennies"
+        retail-cib-sell:
+          $ref: "#/components/schemas/Pennies"
+        retail-new-buy:
+          $ref: "#/components/schemas/Pennies"
+        retail-new-sell:
+          $ref: "#/components/schemas/Pennies"
+
+    ProductSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        product-name:
+          type: string
+        console-name:
+          type: string
+
+    ProductsResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        products:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/ProductSummary"
+
+    Offer:
+      type: object
+      properties:
+        offer-id:
+          type: string
+        offer-status:
+          $ref: "#/components/schemas/OfferStatus"
+        offer-url:
+          type: string
+          description: Relative URL. Prepend `https://www.pricecharting.com`.
+        id:
+          type: integer
+          description: PriceCharting product ID.
+        product-name:
+          type: string
+        console-name:
+          type: string
+        condition-string:
+          type: string
+        include-string:
+          type: string
+        price:
+          $ref: "#/components/schemas/Pennies"
+          description: Current price, or sale price (including any shipping premium) if sold.
+        is-available:
+          type: boolean
+        is-sold:
+          type: boolean
+        is-ended:
+          type: boolean
+        is-shipped:
+          type: boolean
+        sale-time:
+          $ref: "#/components/schemas/Date"
+        shipped-time:
+          $ref: "#/components/schemas/Date"
+        ended-time:
+          $ref: "#/components/schemas/Date"
+        cert-id:
+          type: string
+          description: Grading company certificate number. Graded offers only.
+        grade-co-id:
+          type: integer
+          description: Grading company ID. Graded offers only.
+
+    OffersResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        offers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Offer"
+
+    Buyer:
+      type: object
+      properties:
+        buyer-email:
+          type: string
+        shipping-name:
+          type: string
+        shipping-line1:
+          type: string
+        shipping-line2:
+          type: string
+        shipping-city:
+          type: string
+        shipping-state:
+          type: string
+        shipping-zip:
+          type: string
+        shipping-country:
+          type: string
+
+    OfferDetails:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        buyer:
+          $ref: "#/components/schemas/Buyer"
+        buyer-left-feedback:
+          type: boolean
+        seller-left-feedback:
+          type: boolean
+        id:
+          type: integer
+        product-name:
+          type: string
+        console-name:
+          type: string
+        condition:
+          type: string
+        includes:
+          type: string
+        cost-basis:
+          $ref: "#/components/schemas/Pennies"
+        price:
+          $ref: "#/components/schemas/Pennies"
+        max-price:
+          $ref: "#/components/schemas/Pennies"
+        min-price:
+          $ref: "#/components/schemas/Pennies"
+        shipping-premium:
+          $ref: "#/components/schemas/Pennies"
+          description: Extra paid by the buyer for international shipping.
+        has-pictures:
+          type: boolean
+        is-collection:
+          type: boolean
+        is-ended:
+          type: boolean
+        is-price-descending:
+          type: boolean
+          description: Whether the offer is a reverse auction.
+        is-refunded:
+          type: boolean
+        is-shipped:
+          type: boolean
+        is-sold:
+          type: boolean
+        offer-id:
+          type: string
+        offer-status:
+          $ref: "#/components/schemas/OfferStatus"
+        offer-url:
+          type: string
+        sku:
+          type: string
+          description: Only returned to the seller.
+        tracking-number:
+          type: string
+        start-time:
+          $ref: "#/components/schemas/Date"
+        sale-time:
+          $ref: "#/components/schemas/Date"
+        shipped-time:
+          $ref: "#/components/schemas/Date"
+        ended-time:
+          $ref: "#/components/schemas/Date"
+        refunded-time:
+          $ref: "#/components/schemas/Date"
+
+    PublishResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        offer-id:
+          type: string
+        offer-url:
+          type: string
+        offer-status:
+          $ref: "#/components/schemas/OfferStatus"
+        product-name:
+          type: string
+        console-name:
+          type: string
+        condition-string:
+          type: string
+        include-string:
+          type: string
+        has-pictures:
+          type: boolean
+        price:
+          $ref: "#/components/schemas/Pennies"
+        cost-basis:
+          $ref: "#/components/schemas/Pennies"
+        sku:
+          type: string
+        is-collection:
+          type: boolean
+        quantity:
+          type: integer
+        start-time:
+          $ref: "#/components/schemas/Date"
+
+    OfferIdForm:
+      type: object
+      required: [t, offer-id]
+      properties:
+        t:
+          $ref: "#/components/schemas/Token"
+        offer-id:
+          type: string
+          example: vtdsww72uyslgooawzyyijsllm
+
+    FeedbackResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        offer-id:
+          type: string
+        rating:
+          $ref: "#/components/schemas/Rating"
+        comment:
+          type: string
+
+    ShipResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        offer-id:
+          type: string
+        is-shipped:
+          type: boolean
+        shipped-time:
+          $ref: "#/components/schemas/Date"
+        tracking-number:
+          type: string
+
+    EndResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        offer-id:
+          type: string
+        is-ended:
+          type: boolean
+        ended-time:
+          $ref: "#/components/schemas/Date"
+
+    RefundResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/Status"
+        offer-id:
+          type: string
+        is-refunded:
+          type: boolean
+        refunded-time:
+          $ref: "#/components/schemas/Date"

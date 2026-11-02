@@ -1,0 +1,140 @@
+info:
+  name: /offer-publish
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: https://www.pricecharting.com/api/offer-publish
+  body:
+    type: form-urlencoded
+    data:
+      - name: t
+        value: "{{t}}"
+        description: Required. Access token
+      - name: product
+        value: "9331"
+        description: PriceCharting product ID (one identifier required)
+      - name: upc
+        value: ""
+        description: UPC (alternative identifier)
+        disabled: true
+      - name: asin
+        value: ""
+        description: Amazon ASIN (alternative identifier)
+        disabled: true
+      - name: epid
+        value: ""
+        description: eBay ePID (alternative identifier)
+        disabled: true
+      - name: offer-id
+        value: ""
+        description: Edit this existing offer instead of creating one
+        disabled: true
+      - name: condition-id
+        value: "1"
+        description: Required. Condition ID (see folder docs)
+      - name: price-max
+        value: "901"
+        description: Required. Price in pennies (start price if price-min set)
+      - name: price-min
+        value: ""
+        description: Minimum price in pennies; enables 30-day reverse auction
+        disabled: true
+      - name: add-to-collection
+        value: "on"
+        description: Add to collection instead of listing for sale
+        disabled: true
+      - name: quantity
+        value: "1"
+        description: Copies owned (collections only)
+        disabled: true
+      - name: cost-basis
+        value: ""
+        description: Price you paid, in pennies
+        disabled: true
+      - name: description
+        value: ""
+        description: Max 300 characters
+        disabled: true
+      - name: sku
+        value: 123abc
+        description: Alphanumeric, max 64 chars, unique among active listings
+        disabled: true
+      - name: broken
+        value: "on"
+        disabled: true
+      - name: pristine
+        value: "on"
+        description: '"No blemishes"; excludes other tags except new'
+        disabled: true
+      - name: scratch
+        value: "on"
+        disabled: true
+      - name: stickers
+        value: "on"
+        disabled: true
+      - name: tear
+        value: "on"
+        disabled: true
+      - name: writing
+        value: "on"
+        disabled: true
+      - name: photo1
+        value: ""
+        description: JPG or PNG URL (photo1..photo6)
+        disabled: true
+      - name: photo2
+        value: ""
+        disabled: true
+      - name: photo3
+        value: ""
+        disabled: true
+      - name: photo4
+        value: ""
+        disabled: true
+      - name: photo5
+        value: ""
+        disabled: true
+      - name: photo6
+        value: ""
+        disabled: true
+  auth: none
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Publish a new offer, or edit an existing one when `offer-id` is given.
+
+  Provide one identifier: `product`, `upc`, `asin`, `epid`, or `offer-id`.
+
+  Condition tags (`broken`, `pristine`, `scratch`, `stickers`, `tear`, `writing`) are set to `on`. With no tags, the listing shows "Normal wear".
+
+  #### *Response*
+
+  ```json
+  {
+      "status":"success"
+      "cost-basis":125,                                // price you paid for item
+      "offer-id":"ccirsewk5mdnoest7xkryagimy",         // the unique ID for this new offer
+      "offer-url":"/offer/ccirsewk5mdnoest7xkryagimy", // url for the new offer
+      "offer-status":"available",
+      "product-name":"Metroid",
+      "console-name":"NES",
+      "condition-string":"Scratches, Writing",         // condition values end users will see
+      "include-string":"Game, Box",                    // include values end users will see
+      "has-pictures":false,                            // does the listing have a photo
+      "price":901,
+      "sku":"123abc",
+      "is-collection":false,                           // is the offer in a collection
+      "start-time":"2017-11-03",                       // date the offer was listed
+      "quantity":1,                                    // quantity owned.  only supported for collections
+  }
+  ```
+
+  `status`, `offer-id`, `offer-url`, `offer-status`, `product-name`, `console-name`, `condition-string`, `include-string`, `has-pictures`, `price`, `cost-basis`, `sku`, `is-collection`, `quantity`, `start-time`

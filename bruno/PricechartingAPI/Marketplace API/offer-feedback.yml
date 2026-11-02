@@ -1,0 +1,47 @@
+info:
+  name: /offer-feedback
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: https://www.pricecharting.com/api/offer-feedback
+  body:
+    type: form-urlencoded
+    data:
+      - name: t
+        value: "{{t}}"
+        description: Required. Access token
+      - name: offer-id
+        value: ""
+        description: Required. Offer ID
+      - name: rating
+        value: "2"
+        description: "Required. 2 Great | 1 Good | 0 Ok | -1 Bad | -2 Awful"
+      - name: comment
+        value: Great buyer
+        description: Text explaining the rating
+  auth: none
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Leave feedback on an offer.
+
+  #### *Response*
+
+  ```json
+  {
+      "status":"success",
+      "offer-id":"vtdsww72uyslgooawzyyijsllm",
+      "rating":2,
+      "comment":"Great buyer"
+  }
+  ```
+
+  `status`, `offer-id`, `rating`, `comment`
