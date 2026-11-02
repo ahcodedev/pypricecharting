@@ -1,0 +1,14 @@
+info:
+  name: Prices API
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    Read-only access to current prices. Historic prices and sales are not available.
+
+    Prices are integer pennies ($17.32 = `1732`). Rate limit: 1 call per second.
+  type: text/markdown

@@ -1,0 +1,41 @@
+info:
+  name: /offer-refund
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: https://www.pricecharting.com/api/offer-refund
+  body:
+    type: form-urlencoded
+    data:
+      - name: t
+        value: "{{t}}"
+        description: Required. Access token
+      - name: offer-id
+        value: ""
+        description: Required. Offer ID
+  auth: none
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Refund a purchased offer. Payment is returned immediately from the seller's PayPal account to the buyer.
+
+  #### *Response*
+
+  ```json
+  {
+      "status":"success",
+      "offer-id":"vtdsww72uyslgooawzyyijsllm",
+      "is-refunded":true,
+      "refunded-time":"2017-10-31"
+  }
+  ```
+
+  `status`, `offer-id`, `is-refunded`, `refunded-time`

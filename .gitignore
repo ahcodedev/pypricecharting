@@ -133,3 +133,4 @@ dmypy.json
 
 # Claude
 .claude/*.local.*
+CLAUDE.md

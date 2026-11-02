@@ -1,0 +1,5 @@
+name: Production
+variables:
+  - name: t
+    value: "{{process.env.PRICECHARTING_TOKEN}}"
+    description: API token, loaded from the collection .env file

@@ -1,0 +1,65 @@
+info:
+  name: /products
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: https://www.pricecharting.com/api/products?q=mario n64
+  params:
+    - name: q
+      value: mario n64
+      type: query
+      description: Full text search (required)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  There is one way to specify which products you want:
+
+  `q=earthbound`
+
+  **Full text search**
+
+  Search for a product based on its title and/or console. Returns up to the first 20 matching products.
+
+  Example queries:
+
+  `chrono trigger super nintendo`
+
+  `mario n64`
+
+  `charizard #4`
+
+  #### *Response*
+
+  ```json
+  {
+      "status":   "success",
+      "products": [
+          {
+              "console-name": "Playstation",
+              "id": "4801",
+              "product-name": "Tactics Ogre"
+          },
+          {
+              "console-name": "GameBoy Advance",
+              "id": "2611",
+              "product-name": "Tactics Ogre"
+          },
+          {
+              "console-name": "PSP",
+              "id": "30988",
+              "product-name": "Tactics Ogre: Let Us Cling Together"
+          }
+      ]
+  }
+  ```
+
+  `status` and a `products` list; each entry has `id`, `product-name`, `console-name`.

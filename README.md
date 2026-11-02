@@ -1,6 +1,6 @@
-# Python Project Template ![](https://github.com/ahcodedev/python-project-template/actions/workflows/ci.yml/badge.svg?branch=main)
+# PyPricecharting API Client ![](https://github.com/ahcodedev/pypricecharting/actions/workflows/ci.yml/badge.svg?branch=main)
 
-Baseline Python project template
+Pricecharting API Client written in Python
 
 ## Setup
 
@@ -18,7 +18,7 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 * Install Docker
 * Install VSCode
 * Open project folder in VS Code
-* Install recommended extensions
+* Optional - Install recommended extensions
 * Reopen in container using Remote Development Container menu
 
 ## Project Commands
@@ -33,3 +33,10 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 ## Usage
 
 * Usage Notes
+
+## Supporting Files
+
+Project contains an OpenAPI spec and a Bruno project for easy testing and mocking
+
+* `./bruno` - Bruno project
+* `./open_api` - OpenApi spec

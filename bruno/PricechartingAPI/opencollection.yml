@@ -1,0 +1,105 @@
+opencollection: 1.0.0
+
+info:
+  name: Pricecharting API
+  version: v1
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: apikey
+    key: t
+    value: "{{t}}"
+    placement: query
+
+docs:
+  content: |-
+    # PriceCharting API
+
+    Documentation for all PriceCharting APIs, including the Prices API to get current item prices and the Marketplace API to automate all aspects of finding and selling items on the Marketplace.
+
+    Source: https://www.pricecharting.com/api-documentation
+
+    ## Overview
+
+    - Requests are made over HTTPS
+    - Responses are returned in JSON format
+    - Responses include liberal CORS headers to facilitate cross-site requests
+    - Authentication with a static, shared secret
+
+    ## Authentication
+
+    APIs are a premium tool. You must have a paid subscription to access the API.
+
+    Each subscription has a unique, 40-character token associated with it. You can find this token by visiting the Subscription page and clicking the "API/Download" button.
+
+    Set your own token in the collection `.env` file as `PRICECHARTING_TOKEN`.
+    Set a test token as `PRICECHARTING_TEST_TOKEN`
+
+    Each API call is authenticated by including this token as the `t` parameter in the HTTP request. This token is specific to your guide and grants access to the data you've purchased. Please keep this token private.
+
+    ## Make a Request
+
+    Make an HTTP request to the base URL `https://www.pricecharting.com` plus the path for the API you want. The most common is `/api/product`. Be sure to include a `t` parameter with your access token and any other parameters required by the API itself.
+
+    Requests use `GET` or `POST` methods. As a general rule, APIs that display data only use `GET` and APIs that create or change data use `POST`.
+
+    - Each API response is a JSON object.
+    - Dates are encoded as `YYYY-MM-DD` strings.
+    - Prices are an integer number of pennies. For example, $17.32 is encoded as `1732`.
+    - Booleans are encoded as booleans.
+    - All other keys are encoded as strings.
+
+    ## Error Handling
+
+    Each JSON object contains a `status` key whose value is either `success` or `error`. If the status is `success`, the request completed successfully and the HTTP status code is 200.
+
+    If the status is `error`, there is also an `error-message` key whose value describes what went wrong. The HTTP status code falls in the 400 or 500 range.
+
+    ## API Limits
+
+    The API is limited to 1 call every second. Any more than that and your calls will be blocked, and your account permissions revoked if it persists.
+
+    CSV calls are limited to one every 10 minutes. If you need lots of data on multiple items, download a CSV to get thousands of items in one request.
+
+    ## Usage & Attribution
+
+    The API and CSV data are licensed for internal use only. Sharing price data with a third party, or making it available within an application or service used by others, requires a commercial license and express written permission from PriceCharting.
+
+    If you have approval to share price data via a Commercial Agreement, PriceCharting prefers attribution of either a logo or text linkback to the specific product page:
+
+    `https://www.pricecharting.com/game/{PriceCharting_ID}`
+
+    - Data can and should be cached/stored on your servers. Instead of making API requests for all of your user requests, store the API/CSV results in your database and serve those requests to your users.
+    - All data gathered from the API or CSV must be purged after your subscription has ended.
+
+    ## Download Data via CSV File
+
+    A CSV download with all the data included is a more efficient way to update lots of data points at one time.
+
+    - CSV files are generated once every 24 hours, so there's no need to download more than once per day.
+    - CSV column names match the Prices API key names.
+    - CSV price columns are in USD with two decimal places.
+    - CSV download is only available to Legendary subscribers. Visit the Subscriptions page and click the "API/Download" button.
+  type: text/markdown
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git
+    presets:
+      request:
+        type: http
+        url: https://www.pricecharting.com/api
+      defaultEnvironment: Production
