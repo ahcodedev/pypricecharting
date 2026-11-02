@@ -19,6 +19,7 @@ http:
         value: ""
         description: USPS, FedEx, UPS, or other tracking number
         disabled: true
+  auth: none
 
 settings:
   encodeUrl: true

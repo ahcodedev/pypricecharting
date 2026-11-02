@@ -15,6 +15,7 @@ http:
       - name: offer-id
         value: ""
         description: Required. Offer ID
+  auth: none
 
 settings:
   encodeUrl: true

@@ -99,6 +99,7 @@ http:
       - name: photo6
         value: ""
         disabled: true
+  auth: none
 
 settings:
   encodeUrl: true
