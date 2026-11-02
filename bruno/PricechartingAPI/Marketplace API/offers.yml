@@ -1,0 +1,111 @@
+info:
+  name: /offers
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://www.pricecharting.com/api/offers?status=available
+  params:
+    - name: status
+      value: available
+      type: query
+      description: "Required. available | sold | ended | collection"
+    - name: seller
+      value: ""
+      type: query
+      description: Seller user ID
+      disabled: true
+    - name: buyer
+      value: ""
+      type: query
+      description: Buyer user ID
+      disabled: true
+    - name: console
+      value: G17
+      type: query
+      description: Console ID (e.g. G17 = NES)
+      disabled: true
+    - name: condition-id
+      value: "1"
+      type: query
+      description: Condition ID (see folder docs)
+      disabled: true
+    - name: genre
+      value: Football
+      type: query
+      description: Genre name (see folder docs)
+      disabled: true
+    - name: id
+      value: ""
+      type: query
+      description: PriceCharting product ID
+      disabled: true
+    - name: sort
+      value: lowest-price
+      type: query
+      description: "name | starts | lowest-price"
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Returns offers matching the given filters. Throttle requests to the same URL to once per 5 minutes.
+
+  #### *Response*
+
+  ```json
+  {
+      "status":"success",
+      "offers":[
+          {
+              "condition-string":"Normal wear",
+              "console-name":"NES",
+              "ended-time":"2017-10-31",
+              "id":9307,                                       // unique PriceCharting product ID
+              "include-string":"Game only",
+              "is-available":false,
+              "is-ended":true,
+              "is-shipped":false,
+              "is-sold":true,                                  // has offer sold
+              "offer-id":"smzksacsy5i2dsrddxsrlzsp6i",         // unique offer Id
+              "offer-status":"sold",                           // offer status
+              "offer-url":"/offer/smzksacsy5i2dsrddxsrlzsp6i",
+              "price":1473,                                    // $14.73.  current price
+              "product-name":"M.C. Kids",
+              "sale-time":"2017-10-31",
+              "shipped-time":"0001-01-01",                     // zero time since it hasn't shipped
+          },
+          {
+              "cert-id": "5672930123",                         // gradeing company unique identifier for graded item
+              "condition-string":"Scratched,Writing",
+              "console-name":"NES",
+              "ended-time":"2017-10-30",
+              "grade-co-id": 1,                                // unique ID for the grading company used
+              "id":9729,
+              "include-string":"Game, Box, and Manual",
+              "is-available":false,
+              "is-ended":true,
+              "is-shipped":true,
+              "is-sold":true,
+              "offer-id":"nw6asacmsbvvoq5yeyrkvzcdky",
+              "offer-status":"available",
+              "offer-url":"/offer/nw6asacmsbvvoq5yeyrkvzcdky",
+              "price":6281,
+              "product-name":"Shatterhand",
+              "sale-time":"2017-10-30",
+              "shipped-time":"2017-10-31",
+          },
+      ],
+  }
+  ```
+
+  `status` and an `offers` list. Each offer: `offer-id`, `offer-status`, `offer-url`, `id`, `product-name`, `console-name`, `condition-string`, `include-string`, `price`, `is-available`, `is-sold`, `is-ended`, `is-shipped`, `sale-time`, `shipped-time`, `ended-time`.
+
+  Graded offers also include `cert-id` and `grade-co-id`.

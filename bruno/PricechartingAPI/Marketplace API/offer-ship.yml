@@ -1,0 +1,45 @@
+info:
+  name: /offer-ship
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: https://www.pricecharting.com/api/offer-ship
+  body:
+    type: form-urlencoded
+    data:
+      - name: t
+        value: "{{t}}"
+        description: Required. Access token
+      - name: offer-id
+        value: ""
+        description: Required. Offer ID
+      - name: tracking-number
+        value: ""
+        description: USPS, FedEx, UPS, or other tracking number
+        disabled: true
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  Mark an offer as shipped. A valid tracking number can earn the seller positive feedback if the buyer leaves none, but tracking must show shipment within 3 days and delivery to the buyer's address.
+
+  #### *Response*
+
+  ```json
+  {
+      "status":"success",
+      "offer-id":"vtdsww72uyslgooawzyyijsllm",
+      "is-shipped":true,
+      "shipped-time":"2017-10-31",          // the date we were notified of shipping
+      "tracking-number": "901234567890000"
+  }
+  ```
+
+  `status`, `offer-id`, `is-shipped`, `shipped-time`, `tracking-number`

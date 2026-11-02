@@ -1,0 +1,40 @@
+info:
+  name: /offer-end
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: https://www.pricecharting.com/api/offer-end
+  body:
+    type: form-urlencoded
+    data:
+      - name: t
+        value: "{{t}}"
+        description: Required. Access token
+      - name: offer-id
+        value: ""
+        description: Required. Offer ID
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  End an offer so it can no longer be purchased. For collection items, this removes the item from the collection.
+
+  #### *Response*
+
+  ```json
+  {
+      "status":"success",
+      "offer-id":"vtdsww72uyslgooawzyyijsllm",
+      "is-ended":true,
+      "ended-time":"2017-10-31"
+  }
+  ```
+
+  `status`, `offer-id`, `is-ended`, `ended-time`

@@ -1,0 +1,113 @@
+info:
+  name: /product
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://www.pricecharting.com/api/product?id=6910
+  params:
+    - name: id
+      value: "6910"
+      type: query
+      description: PriceCharting product ID
+    - name: upc
+      value: "045496830434"
+      type: query
+      description: UPC barcode
+      disabled: true
+    - name: q
+      value: earthbound
+      type: query
+      description: Full text search (best match only)
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+docs: |-
+  This API provides data about a single product. Its response is semantically equivalent to a single row in your downloadable CSV price guide. The JSON key names exactly match the column names.
+
+  #### *Parameters*
+
+  There are several ways to specify which product you want (use one):
+
+  `id=6910`
+
+  **PriceCharting product ID number**\
+  This number is available in CSV price guides, provided in API responses or available by hovering your mouse over the product title on an item page on [PriceCharting.com](http://PriceCharting.com)
+
+  `upc=045496830434`
+
+  **UPC**\
+  The Universal Product Code is a convenient way to identify products for recent systems. Games in the First and Second Generation rarely have UPCs.
+
+  `q=earthbound`
+
+  **Full text search**\
+  Search for a product based on its title and/or console. If multiple products match the search, only the best match is returned. Example queries:\
+  \
+  `chrono trigger super nintendo`\
+  `mario n64`\
+  `super mario`
+
+  #### *Response*
+
+  ```json
+  {
+      "status": "success",              // response status
+      "cib-price": 42995,               // $429.95
+      "console-name": "Super Nintendo",
+      "id": "6910",                     // unique PriceCharting product ID
+      "loose-price": 17244,             // $172.44
+      "new-price": 53000,               // $530.00
+      "product-name": "EarthBound",
+      "release-date": "1995-06-05"      // 5 June 1995
+  }
+  ```
+
+  Prices are integer pennies ($17.32 = `1732`).
+
+  **Identifiers / metadata:** `id`, `product-name`, `console-name`, `genre`, `release-date`, `upc`, `asin`, `epid`, `tcg-id` (cards only), `sales-volume`
+
+  **Video game prices**
+
+  | Key | Meaning |
+  |---|---|
+  | `loose-price` | Item only, no box or manual |
+  | `cib-price` | Item with box and manual |
+  | `new-price` | New, original packaging and seal |
+  | `graded-price` | New, graded by WATA or VGA |
+  | `box-only-price` | Original box only |
+  | `manual-only-price` | Original manual only |
+
+  **Card / comic prices**
+
+  | Key | Cards | Comics |
+  |---|---|---|
+  | `loose-price` | Ungraded | Ungraded |
+  | `cib-price` | Grade 7 / 7.5 | 4.0 / 4.5 |
+  | `new-price` | Grade 8 / 8.5 | 6.0 / 6.5 |
+  | `graded-price` | Grade 9 | 8.0 / 8.5 |
+  | `box-only-price` | Grade 9.5 | 9.2 |
+  | `manual-only-price` | PSA 10 | 9.8 |
+  | `bgs-10-price` | BGS 10 | 10.0 |
+  | `condition-9-price` | Grade 1 | 2.0 |
+  | `condition-10-price` | Grade 2 | 9.6 |
+  | `condition-13-price` | Grade 3 | 3.0 |
+  | `condition-14-price` | Grade 4 | 5.0 |
+  | `condition-15-price` | Grade 5 | 7.0 |
+  | `condition-16-price` | Grade 6 | 9.0 |
+  | `condition-17-price` | CGC 10 | 9.4 |
+  | `condition-18-price` | SGC 10 | |
+  | `condition-19-price` | CGC 10 Pristine | |
+  | `condition-20-price` | BGS 10 Black | |
+  | `condition-21-price` | TAG 10 | |
+  | `condition-22-price` | ACE 10 | |
+
+  **Retail:** `gamestop-price`, `retail-loose-buy`, `retail-loose-sell`, `retail-cib-buy`, `retail-cib-sell`, `retail-new-buy`, `retail-new-sell`

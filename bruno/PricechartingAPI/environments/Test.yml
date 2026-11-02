@@ -1,0 +1,5 @@
+name: Test
+variables:
+  - name: t
+    value: "{{process.env.PRICECHARTING_TEST_TOKEN}}"
+
