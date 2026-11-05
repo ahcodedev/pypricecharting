@@ -24,6 +24,8 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.action != 'labeled' && github.event.action != 'unlabeled'
     runs-on: ubuntu-latest
     permissions:
+      # Release Drafter reads .github/release-drafter.yml through the contents API
+      contents: read
       pull-requests: write
     steps:
     - uses: release-drafter/release-drafter@v6
