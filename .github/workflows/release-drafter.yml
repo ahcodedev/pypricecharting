@@ -12,25 +12,25 @@ permissions:
 jobs:
   update-draft:
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: write
       # Release Drafter looks up the merged PRs for each commit
       pull-requests: read
     steps:
-    - uses: release-drafter/release-drafter@v6
+    - uses: release-drafter/release-drafter@978bb0b30c5ee8cdd332ced253758157150d43f0 # v7.10.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   autolabel:
     if: github.event_name == 'pull_request' && github.event.action != 'labeled' && github.event.action != 'unlabeled'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       # Release Drafter reads .github/release-drafter.yml through the contents API
       contents: read
       pull-requests: write
     steps:
-    - uses: release-drafter/release-drafter@v6
+    - uses: release-drafter/release-drafter@978bb0b30c5ee8cdd332ced253758157150d43f0 # v7.10.0
       with:
         disable-releaser: true
       env:
@@ -45,7 +45,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: mheap/github-action-required-labels@v5
+    - uses: mheap/github-action-required-labels@23e10fde7e062233401931a0eece796cd9bf3177 # v5.6.0
       with:
         mode: minimum
         count: 1

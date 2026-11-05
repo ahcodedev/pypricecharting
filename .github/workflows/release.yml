@@ -18,17 +18,20 @@ jobs:
       # Release Drafter looks up the merged PRs for each commit
       pull-requests: read
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         ref: main
+        # Credentials are kept so the job can push the release commit
+        persist-credentials: true  # zizmor: ignore[artipacked]
     - name: Install uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       with:
-        version: ">=0.11,<0.12"
+        enable-cache: false
+        version: ">=0.13,<0.14"
 
     - name: Refresh draft release
       id: drafter
-      uses: release-drafter/release-drafter@v6
+      uses: release-drafter/release-drafter@978bb0b30c5ee8cdd332ced253758157150d43f0 # v7.10.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -38,7 +41,7 @@ jobs:
       run: uv version "$VERSION"
 
     - name: Update CHANGELOG.md
-      uses: stefanzweifel/changelog-updater-action@v1
+      uses: stefanzweifel/changelog-updater-action@a938690fad7edf25368f37e43a1ed1b34303eb36 # v1.12.0
       with:
         latest-version: ${{ steps.drafter.outputs.tag_name }}
         release-notes: ${{ steps.drafter.outputs.body }}

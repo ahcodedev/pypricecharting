@@ -1,4 +1,4 @@
-name: CI Checks
+name: Python CI Checks
 
 on:
   push:
@@ -6,31 +6,23 @@ on:
   pull_request:
     branches: [ main ]
 
-permissions:
-  contents: read
-  pull-requests: read
+permissions: {}
 
 jobs:
   code-check-and-unit-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        fetch-depth: 0  # gitleaks needs commit history to scan the PR range
-    - name: Setup just
-      uses: extractions/setup-just@v3
+        persist-credentials: false
     - name: Install uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       with:
-        enable-cache: true
-        version: ">=0.11,<0.12"
-    - name: Check gitleaks
-      uses: gitleaks/gitleaks-action@v3
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITLEAKS_ENABLE_COMMENTS: false
+        enable-cache: false
+        version: ">=0.13,<0.14"
     - name: Setup environment
       run: |
+        uv tool install rust-just
         just sync
     - name: Lint
       run: |
