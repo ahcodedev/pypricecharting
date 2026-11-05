@@ -1,4 +1,5 @@
 # PyPricecharting API Client ![](https://github.com/ahcodedev/pypricecharting/actions/workflows/python.yml/badge.svg?branch=main)
+[![Security](https://github.com/ahcodedev/pypricecharting/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/security.yml)
 [![gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks)
 
 Pricecharting API Client written in Python
@@ -9,11 +10,12 @@ Project supports local development and VSCode Dev container development
 
 ### Local Development Installation
 
-Note: Project uses `uv` and `just` to manage project configuration and commands
+Note: Project uses `uv` (0.13.x, enforced by `required-version` in `pyproject.toml`) and `just` to
+manage project configuration and commands
 
 * Install `just` - `brew install just`
 * Set up project - `just setup`
-  * Installs Homebrew dependencies (`gitleaks`, `just`, `uv`)
+  * Installs Homebrew dependencies (`gitleaks`, `just`, `uv`, `zizmor`)
   * Installs `prek` git hooks
   * Syncs project dependencies
 
@@ -25,6 +27,9 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 * Optional - Install recommended extensions
 * Reopen in container using Remote Development Container menu
 
+The base image, `just`, and `uv` are pinned by version and digest in `.devcontainer/Dockerfile`
+and updated by Dependabot. To change the Python version, edit the `FROM` line.
+
 ## Project Commands
 
 * `just setup` - install tools and git hooks, then sync dependencies
@@ -34,6 +39,7 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 * `just test` - run unit tests
 * `just prek` - run all pre-commit hooks
 * `just git-leaks` - scan staged changes for secrets
+* `just zizmor` - audit GitHub Actions workflows for security issues
 * `uv add {package}` - install a dependency
 
 ### Pre-commit Hooks
@@ -44,6 +50,20 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 * `just ci-lint`
 * `just test`
 * `gitleaks` secret scan of staged changes
+
+## CI and Security
+
+| Workflow                                          | Runs on                      | Purpose                                        |
+| ------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
+| `python.yml`                                      | push / PR to `main`          | lint and unit tests                            |
+| `security.yml`                                    | push to `main`, all PRs      | zizmor workflow audit, gitleaks secret scan    |
+| `release-drafter.yml`                             | push to `main`, PRs          | update the draft release, label PRs            |
+| `release.yml`                                     | manual                       | publish a release                              |
+
+* GitHub Actions are pinned to full commit SHAs, with the version in a trailing comment
+* Dependabot (`.github/dependabot.yml`) checks weekly for updates to GitHub Actions, Python
+  dependencies, the dev container image, and dev container features. New releases wait 7 days
+  before an update is proposed. Dependabot PRs get the `dependencies` label
 
 ## Releases
 

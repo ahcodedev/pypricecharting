@@ -20,3 +20,5 @@ sync:
     uv sync --all-groups
 test:
     uv run pytest
+zizmor:
+    zizmor . --collect all
