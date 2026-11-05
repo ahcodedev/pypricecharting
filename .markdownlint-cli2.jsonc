@@ -1,0 +1,6 @@
+{
+  // Files excluded from markdown linting (glob syntax)
+  "ignores": [
+    ".github/pull_request_template.md"
+  ]
+}

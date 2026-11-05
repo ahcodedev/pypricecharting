@@ -1,32 +1,38 @@
 [project]
-name = "example"
+name = "pypricecharting"
+description = "Python PriceCharting API Client"
 version = "0.0.1"
 requires-python = ">=3.14"
 
 dependencies = []
 
+[build-system]
+requires = ["uv_build>=0.11.32,<0.12.0"]
+build-backend = "uv_build"
+
 [dependency-groups]
 dev = [
     "codespell>=2.4.3",
+    "prek>=0.5.10",
     "pytest",
     "pytest-cov",
     "ruff>=0.16.0",
+    "ty>=0.0.96",
 ]
 
 [tool.codespell]
 # Product names used in PriceCharting's example data.
 ignore-words-list = "gameboy"
 
-
 [tool.pytest.ini_options]
-pythonpath = ["."]
+addopts = "--cov=src --cov-report=term-missing --cov-fail-under 98"
 
 [tool.ruff]
 line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "D"]  # Choose your rule categories
+select = ["B", "E", "F", "W", "I", "N", "PT", "D", "UP", "RUF", "SIM"]  # Choose your rule categories
 ignore = ["D100", "D104", "D211", "D203", "D213", "D400", "D401", "D415"]
 extend-ignore = ["E501"]  # Line too long (handled by formatter)
 
@@ -35,3 +41,6 @@ extend-ignore = ["E501"]  # Line too long (handled by formatter)
 
 [tool.ruff.format]
 quote-style = "double"
+
+[tool.uv]
+required-version = ">=0.11,<0.12"

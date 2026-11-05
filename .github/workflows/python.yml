@@ -6,27 +6,33 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   code-check-and-unit-test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
-    - name: Setup Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.14"
     - name: Setup just
       uses: extractions/setup-just@v3
     - name: Install uv
-      uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+      uses: astral-sh/setup-uv@v7
       with:
         enable-cache: true
+        version: ">=0.11,<0.12"
+    - name: Check gitleaks
+      uses: gitleaks/gitleaks-action@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITLEAKS_ENABLE_COMMENTS: false
     - name: Setup environment
       run: |
         just sync
     - name: Lint
       run: |
-        just lint
+        just ci-lint
     - name: Unit tests
       run: |
         just test

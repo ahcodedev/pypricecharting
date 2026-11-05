@@ -1,4 +1,4 @@
-from src.hello_world import hello_world
+from pypricecharting.hello_world import hello_world
 
 
 def test_hello_world():
