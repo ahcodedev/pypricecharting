@@ -1,0 +1,50 @@
+name: Release Drafter
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ opened, reopened, synchronize, labeled, unlabeled ]
+
+permissions:
+  contents: read
+
+jobs:
+  update-draft:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: release-drafter/release-drafter@v6
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  autolabel:
+    if: github.event_name == 'pull_request' && github.event.action != 'labeled' && github.event.action != 'unlabeled'
+    runs-on: ubuntu-latest
+    permissions:
+      # Release Drafter reads .github/release-drafter.yml through the contents API
+      contents: read
+      pull-requests: write
+    steps:
+    - uses: release-drafter/release-drafter@v6
+      with:
+        disable-releaser: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  require-label:
+    needs: [ autolabel ]
+    # Run even when autolabel is skipped (labeled/unlabeled events)
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+    - uses: mheap/github-action-required-labels@v5
+      with:
+        mode: minimum
+        count: 1
+        labels: "breaking, feature, enhancement, bug, fix, chore, ci, dependencies, documentation, refactor, skip-changelog"
+        use_api: true
