@@ -35,7 +35,7 @@ asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py315"
 
 [tool.ruff.lint]
 select = ["B", "E", "F", "W", "I", "N", "PT", "D", "UP", "RUF", "SIM"]  # Choose your rule categories

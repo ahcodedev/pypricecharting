@@ -28,6 +28,7 @@ def test_marketplace_route():
     assert MarketPlace.OFFER_DETAILS.value == "/api/offer-details"
     assert MarketPlace.OFFER_FEEDBACK.value == "/api/offer-feedback"
     assert MarketPlace.OFFER_SHIP.value == "/api/offer-ship"
+    assert MarketPlace.OFFER_REFUND.value == "/api/offer-refund"
     assert MarketPlace.OFFER_END.value == "/api/offer-end"
 
 
@@ -47,7 +48,7 @@ def test_route_routes():
     assert Route.PRICES.value is Prices
 
 
-def test_genre_lookup_by_value():
+def test_route_lookup_by_value():
     for member in Route:
         assert Route(member.value) is member
 
