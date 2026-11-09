@@ -22,4 +22,5 @@ labels; other repository labels (e.g. `good first issue`, `question`) are ignore
   `ci/`, `docs/`, `refactor/`) and from the files it changes. You can add or change them by hand
 * Merging to `main` updates a draft GitHub Release with the next version and notes
 * To release, run the **Release** workflow from the Actions tab. It bumps the version in
-  `pyproject.toml`/`uv.lock`, updates `CHANGELOG.md`, tags the release, and uploads build artifacts
+  `pyproject.toml`/`uv.lock`, tags the release, and uploads build artifacts. The GitHub Release
+  notes are the changelog

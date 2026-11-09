@@ -36,6 +36,8 @@ manage project configuration and commands
 * `just prek` - run all pre-commit hooks
 * `just git-leaks` - scan staged changes for secrets
 * `just zizmor` - audit GitHub Actions workflows for security issues
+* `just docs` - serve the docs site locally with live reload
+* `just docs-build` - build the docs site into `site/` in strict mode
 * `uv add {package}` - install a dependency
 
 ### Pre-commit Hooks
@@ -51,17 +53,34 @@ manage project configuration and commands
 
 See [CI.md](CI.md) for the GitHub Actions workflows and Dependabot setup.
 
+## Documentation
+
+The docs site is built with [Zensical](https://zensical.org) from `mkdocs.yml` and the pages in
+`docs/`. API reference pages are generated from docstrings with `mkdocstrings`. The `docs.yml`
+workflow deploys the site to GitHub Pages on every push to `main`.
+
 ## Releases
 
 See [RELEASE.md](RELEASE.md) for how releases and release labels work.
 
 ## Usage
 
-### Types
+The client is under development. `PriceCharting` and `AsyncPriceCharting` can be created and used
+as context managers, but their API methods are not implemented yet.
+
+```python
+from pypricecharting import AsyncPriceCharting, PriceCharting
+
+with PriceCharting("<40-character API token>") as client:
+    ...
+
+async with AsyncPriceCharting("<40-character API token>") as client:
+    ...
+```
 
 ## Supporting Files
 
 Project contains an OpenAPI spec and a Bruno project for easy testing and mocking
 
 * `./bruno` - Bruno project
-* `./open_api` - OpenApi spec
+* `./open_api` - OpenAPI spec

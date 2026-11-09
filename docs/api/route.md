@@ -1,0 +1,3 @@
+# Routes
+
+::: pypricecharting.route
