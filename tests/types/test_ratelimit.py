@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from pypricecharting.types.rate_limit import RateLimit
+from pypricecharting.types import RateLimit
 
 
 def test_ratelimit_members():

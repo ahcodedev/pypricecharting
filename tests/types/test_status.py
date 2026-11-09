@@ -1,6 +1,6 @@
 import pytest
 
-from pypricecharting.types.status import Status
+from pypricecharting.types import Status
 
 
 def test_status():
