@@ -1,7 +1,9 @@
 from datetime import date
 
+from httpx2 import Response
 from pydantic import Field
 
+from pypricecharting.error import APIError
 from pypricecharting.models import Buyer, Offer, PriceChartingModel, ProductSummary
 from pypricecharting.types import OfferStatus, Rating, Status
 
@@ -240,3 +242,32 @@ class OfferRefundResponse(PriceChartingModel):
     offer_id: str | None = None
     is_refunded: bool | None = None
     refunded_time: date | None = None
+
+
+def _parse[M: PriceChartingModel](response: Response, model: type[M]) -> M:
+    """Validate an HTTP response into a response model.
+
+    Args:
+        response: The HTTP response from the PriceCharting API.
+        model: The response model to validate the JSON body into.
+
+    Returns:
+        The validated response model.
+
+    Raises:
+        APIError: If the response is not JSON, has a non-2xx status code, or has
+            `status: error`.
+
+    """
+    try:
+        data = response.json()
+    except ValueError:
+        raise APIError(
+            response.reason_phrase or "Invalid JSON response", response.status_code
+        ) from None
+
+    if not response.is_success or data.get("status") == "error":
+        message = data.get("error-message", response.reason_phrase or "Unknown error")
+        raise APIError(message, response.status_code)
+
+    return model.model_validate(data)

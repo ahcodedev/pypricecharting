@@ -1,6 +1,13 @@
-# PyPriceCharting API Client ![](https://github.com/ahcodedev/pypricecharting/actions/workflows/python.yml/badge.svg?branch=main)
+# PyPriceCharting API Client
+
+[![CI](https://github.com/ahcodedev/pypricecharting/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/python.yml)
+[![Docs](https://github.com/ahcodedev/pypricecharting/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/docs.yml)
 [![Security](https://github.com/ahcodedev/pypricecharting/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/security.yml)
 [![gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+![Python](https://img.shields.io/badge/python-3.15-blue)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 PriceCharting API Client written in Python
 
@@ -65,18 +72,22 @@ See [RELEASE.md](RELEASE.md) for how releases and release labels work.
 
 ## Usage
 
-The client is under development. `PriceCharting` and `AsyncPriceCharting` can be created and used
-as context managers, but their API methods are not implemented yet.
+The client is under development. `product` is implemented on both clients; the other API methods
+are not implemented yet.
 
 ```python
 from pypricecharting import AsyncPriceCharting, PriceCharting
 
 with PriceCharting("<40-character API token>") as client:
-    ...
+    game = client.product(id="6910")
+    print(game.product_name, game.cib_price)  # prices are in pennies
 
 async with AsyncPriceCharting("<40-character API token>") as client:
-    ...
+    game = await client.product(q="earthbound")
 ```
+
+If the token is omitted, it is read from the `PRICECHARTING_TOKEN` environment variable. See the
+docs site for errors and client options.
 
 ## Supporting Files
 
