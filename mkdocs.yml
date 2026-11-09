@@ -46,4 +46,5 @@ nav:
       - Requests: api/requests.md
       - Responses: api/responses.md
       - Types: api/types.md
+      - Errors: api/errors.md
       - Routes: api/route.md
