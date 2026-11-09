@@ -23,10 +23,16 @@ dev = [
     "ruff>=0.16.0",
     "ty>=0.0.96",
 ]
+docs = [
+    "mkdocstrings[python]>=1.0.8",
+    "zensical>=0.1.0",
+]
 
 [tool.codespell]
 # Product names used in PriceCharting's example data.
 ignore-words-list = "gameboy"
+# MkDocs build output.
+skip = "./site"
 
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report=term-missing --cov-fail-under 98"

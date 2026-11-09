@@ -3,6 +3,10 @@ ci-lint:
     uv run ruff check .
     uv run ruff format --check .
     uv run codespell
+docs:
+    uv run zensical serve
+docs-build:
+    uv run zensical build --strict
 git-leaks:
     gitleaks git --pre-commit --staged --redact
 lint:

@@ -23,5 +23,5 @@ Add a release label to this PR from the Labels section of the PR sidebar
 - [ ] `just lint` passes
 - [ ] `just test` passes
 - [ ] Tests added or updated for the change
-- [ ] `README.md` updated if needed
+- [ ] Docs updated if needed (`README.md`, `docs/`, `CLAUDE.md`)
 - [ ] Release label added

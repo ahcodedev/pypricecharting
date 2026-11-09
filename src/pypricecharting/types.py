@@ -12,16 +12,15 @@ class Status(Enum):
 
 @unique
 class OfferStatus(Enum):
-    """PriceCharting Marketplace offer status
-
-    PENDING means a vacation hold or payment issue.
-    """
+    """PriceCharting Marketplace offer status"""
 
     AVAILABLE = "available"
     SOLD = "sold"
     ENDED = "ended"
     PENDING = "pending"
+    """Published but not purchasable, because of a vacation hold or payment issue."""
     COLLECTION = "collection"
+    """Tracked in the seller's collection, not listed for sale."""
 
 
 @unique
@@ -47,10 +46,11 @@ class RateLimit(Enum):
     """Minimum wait between PriceCharting API calls."""
 
     API = datetime.timedelta(seconds=1)
+    """Any API call: once per second."""
     CSV = datetime.timedelta(minutes=10)
-
-    # Offers requests rate limited to 5 minutes for the SAME query
+    """CSV downloads: once every 10 minutes."""
     OFFERS_POLLING = datetime.timedelta(minutes=5)
+    """The same `/api/offers` URL: once every 5 minutes."""
 
 
 @unique
@@ -63,6 +63,7 @@ class VideoGames(Enum):
     LOOSE = 1
     NEW_AND_SEALED = 2
     CIB = 3
+    """Complete in box: item, box, and manual."""
     GRADED = 5
     BOX_ONLY = 6
     MANUAL_ONLY = 7
@@ -119,14 +120,23 @@ class Coins(Enum):
 
     UNGRADED = 1
     AU_50_58 = 2
+    """About Uncirculated, grade 50-58."""
     VF_20_35 = 3
+    """Very Fine, grade 20-35."""
     MS_62 = 5
+    """Mint State 62."""
     MS_64 = 6
+    """Mint State 64."""
     MS_66 = 7
+    """Mint State 66."""
     F_12_15 = 8
+    """Fine, grade 12-15."""
     XF_40_45 = 9
+    """Extremely Fine, grade 40-45."""
     MS_60 = 10
+    """Mint State 60."""
     MS_61 = 13
+    """Mint State 61."""
 
 
 @unique
