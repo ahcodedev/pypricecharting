@@ -1,11 +1,204 @@
+import datetime
 from enum import Enum, unique
 
-# https://www.pricecharting.com/api-documentation#console-ids
+
+@unique
+class Status(Enum):
+    """PriceCharting API response status"""
+
+    SUCCESS = "success"
+    ERROR = "error"
+
+
+@unique
+class OfferStatus(Enum):
+    """PriceCharting Marketplace offer status
+
+    PENDING means a vacation hold or payment issue.
+    """
+
+    AVAILABLE = "available"
+    SOLD = "sold"
+    ENDED = "ended"
+    PENDING = "pending"
+    COLLECTION = "collection"
+
+
+@unique
+class Rating(Enum):
+    """PriceCharting Marketplace feedback rating"""
+
+    GREAT = 2
+    GOOD = 1
+    OK = 0
+    BAD = -1
+    AWFUL = -2
+
+
+@unique
+class State(Enum):
+    """State flag"""
+
+    ON = "on"
+
+
+@unique
+class RateLimit(Enum):
+    """Minimum wait between PriceCharting API calls."""
+
+    API = datetime.timedelta(seconds=1)
+    CSV = datetime.timedelta(minutes=10)
+
+    # Offers requests rate limited to 5 minutes for the SAME query
+    OFFERS_POLLING = datetime.timedelta(minutes=5)
+
+
+@unique
+class VideoGames(Enum):
+    """Condition IDs for video game products.
+
+    https://www.pricecharting.com/api-documentation#includes
+    """
+
+    LOOSE = 1
+    NEW_AND_SEALED = 2
+    CIB = 3
+    GRADED = 5
+    BOX_ONLY = 6
+    MANUAL_ONLY = 7
+    ITEM_AND_BOX = 8
+    ITEM_AND_MANUAL = 9
+    BOX_AND_MANUAL = 10
+    GRADED_CIB = 13
+
+
+@unique
+class Cards(Enum):
+    """Condition IDs for trading card products.
+
+    https://www.pricecharting.com/api-documentation#includes
+    """
+
+    UNGRADED = 1
+    GRADE_8 = 2
+    GRADE_7 = 3
+    GRADE_9 = 5
+    GRADE_9_5 = 6
+    GRADE_10 = 7
+    BGS_10 = 8
+    GRADE_1 = 9
+    GRADE_2 = 10
+    GRADE_3 = 13
+
+
+@unique
+class Comics(Enum):
+    """Condition IDs for comic book products.
+
+    https://www.pricecharting.com/api-documentation#includes
+    """
+
+    UNGRADED = 1
+    GRADE_6_0 = 2
+    GRADE_4_0 = 3
+    GRADE_8_0 = 5
+    GRADE_9_2 = 6
+    GRADE_9_8 = 7
+    GRADE_10_0 = 8
+    GRADE_2_0 = 9
+    GRADE_9_6 = 10
+    GRADE_3_0 = 13
+
+
+@unique
+class Coins(Enum):
+    """Condition IDs for coin products.
+
+    https://www.pricecharting.com/api-documentation#includes
+    """
+
+    UNGRADED = 1
+    AU_50_58 = 2
+    VF_20_35 = 3
+    MS_62 = 5
+    MS_64 = 6
+    MS_66 = 7
+    F_12_15 = 8
+    XF_40_45 = 9
+    MS_60 = 10
+    MS_61 = 13
+
+
+@unique
+class Condition(Enum):
+    """Condition ID enums grouped by product category.
+
+    https://www.pricecharting.com/api-documentation#includes
+    """
+
+    VIDEOGAMES = VideoGames
+    CARDS = Cards
+    COMICS = Comics
+    COINS = Coins
+
+
+@unique
+class Genre(Enum):
+    """Product genres as labeled by PriceCharting.
+
+    https://www.pricecharting.com/api-documentation#genres
+    """
+
+    ACCESSORIES = "Accessories"
+    ACTION_AND_ADVENTURE = "Action & Adventure"
+    ARCADE = "Arcade"
+    BASEBALL = "Baseball"
+    BEAT_EM_UP = "Beat'em Up"
+    BASKETBALL = "Basketball"
+    BOARD_AND_CARD = "Board & Card"
+    CASINO = "Casino"
+    COMPILATION = "Compilation"
+    CONTROLLERS = "Controllers"
+    DANCE = "Dance"
+    DEMO_AND_NFR = "Demo & NFR"
+    EXTREME_SPORTS = "Extreme Sports"
+    EDUCATIONAL = "Educational"
+    FIGHTING = "Fighting"
+    FOOTBALL = "Football"
+    FPS = "FPS"
+    GOLF = "Golf"
+    HACK_AND_SLASH = "Hack and Slash"
+    HORROR = "Horror"
+    LIGHT_GUN = "Light Gun"
+    MAGAZINE = "Magazine"
+    MINI_GAMES = "Mini Games"
+    MOVIE = "Movie"
+    MUSIC = "Music"
+    OTHER = "Other"
+    PARTY = "Party"
+    PINBALL = "Pinball"
+    PLATFORMER = "Platformer"
+    PUZZLE = "Puzzle"
+    RACING = "Racing"
+    RPG = "RPG"
+    SIMULATION = "Simulation"
+    SHOOT_EM_UP = "Shoot'em Up"
+    SOCCER = "Soccer"
+    SPORTS = "Sports"
+    STRATEGY = "Strategy"
+    SYSTEMS = "Systems"
+    THIRD_PERSON_SHOOTER = "Third Person Shooter"
+    TRIVIA = "Trivia"
+    VISUAL_NOVEL = "Visual Novel"
+    WRESTLING = "Wrestling"
 
 
 @unique
 class Console(Enum):
-    """PriceCharting Console IDs"""
+    """PriceCharting Console IDs
+
+    https://www.pricecharting.com/api-documentation#console-ids
+    """
 
     PANASONIC_3DO = "G25"
     ACTION_MAX = "G36545"

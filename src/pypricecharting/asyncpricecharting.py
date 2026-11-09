@@ -4,7 +4,7 @@ from typing import Self
 from httpx2 import AsyncClient
 
 
-class AsyncPyPriceCharting:
+class AsyncPriceCharting:
     """Asynchronous PriceCharting API client."""
 
     def __init__(self, credential: str):

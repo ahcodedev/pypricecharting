@@ -1,6 +1,6 @@
 import pytest
 
-from pypricecharting.types.console import Console
+from pypricecharting.types import Console
 
 # Source: https://www.pricecharting.com/api-documentation#console-ids
 

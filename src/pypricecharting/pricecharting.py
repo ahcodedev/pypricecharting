@@ -4,7 +4,7 @@ from typing import Self
 from httpx2 import Client
 
 
-class PyPriceCharting:
+class PriceCharting:
     """Synchronous PriceCharting API client."""
 
     def __init__(self, credential: str):

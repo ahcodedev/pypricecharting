@@ -1,6 +1,6 @@
 import pytest
 
-from pypricecharting.types.genre import Genre
+from pypricecharting.types import Genre
 
 # Source: https://www.pricecharting.com/api-documentation#genres
 

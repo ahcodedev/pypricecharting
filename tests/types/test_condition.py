@@ -1,6 +1,6 @@
 import pytest
 
-from pypricecharting.types.condition import Cards, Coins, Comics, Condition, VideoGames
+from pypricecharting.types import Cards, Coins, Comics, Condition, VideoGames
 
 # Source: https://www.pricecharting.com/api-documentation#includes
 
