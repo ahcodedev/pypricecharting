@@ -1,109 +1,101 @@
 import pytest
 
-from pypricecharting.types import Cards, Coins, Comics, Condition, VideoGames
+from pypricecharting.types import Condition
 
 # Source: https://www.pricecharting.com/api-documentation#includes
 
 
 def test_video_games_members():
-    assert len(VideoGames) == 10
-    assert VideoGames.LOOSE.value == 1
-    assert VideoGames.NEW_AND_SEALED.value == 2
-    assert VideoGames.CIB.value == 3
-    assert VideoGames.GRADED.value == 5
-    assert VideoGames.BOX_ONLY.value == 6
-    assert VideoGames.MANUAL_ONLY.value == 7
-    assert VideoGames.ITEM_AND_BOX.value == 8
-    assert VideoGames.ITEM_AND_MANUAL.value == 9
-    assert VideoGames.BOX_AND_MANUAL.value == 10
-    assert VideoGames.GRADED_CIB.value == 13
+    assert len(Condition.VideoGames) == 10
+    assert Condition.VideoGames.LOOSE == 1
+    assert Condition.VideoGames.NEW_AND_SEALED == 2
+    assert Condition.VideoGames.CIB == 3
+    assert Condition.VideoGames.GRADED == 5
+    assert Condition.VideoGames.BOX_ONLY == 6
+    assert Condition.VideoGames.MANUAL_ONLY == 7
+    assert Condition.VideoGames.ITEM_AND_BOX == 8
+    assert Condition.VideoGames.ITEM_AND_MANUAL == 9
+    assert Condition.VideoGames.BOX_AND_MANUAL == 10
+    assert Condition.VideoGames.GRADED_CIB == 13
 
 
 def test_video_games_lookup_by_id():
-    for member in VideoGames:
-        assert VideoGames(member.value) is member
+    for member in Condition.VideoGames:
+        assert Condition.VideoGames(member) is member
 
 
 def test_video_games_unknown_id_raises():
     with pytest.raises(ValueError, match="is not a valid"):
-        VideoGames(4)
+        Condition.VideoGames(4)
 
 
 def test_cards_members():
-    assert len(Cards) == 10
-    assert Cards.UNGRADED.value == 1
-    assert Cards.GRADE_8.value == 2
-    assert Cards.GRADE_7.value == 3
-    assert Cards.GRADE_9.value == 5
-    assert Cards.GRADE_9_5.value == 6
-    assert Cards.GRADE_10.value == 7
-    assert Cards.BGS_10.value == 8
-    assert Cards.GRADE_1.value == 9
-    assert Cards.GRADE_2.value == 10
-    assert Cards.GRADE_3.value == 13
+    assert len(Condition.Cards) == 10
+    assert Condition.Cards.UNGRADED == 1
+    assert Condition.Cards.GRADE_8 == 2
+    assert Condition.Cards.GRADE_7 == 3
+    assert Condition.Cards.GRADE_9 == 5
+    assert Condition.Cards.GRADE_9_5 == 6
+    assert Condition.Cards.GRADE_10 == 7
+    assert Condition.Cards.BGS_10 == 8
+    assert Condition.Cards.GRADE_1 == 9
+    assert Condition.Cards.GRADE_2 == 10
+    assert Condition.Cards.GRADE_3 == 13
 
 
 def test_cards_lookup_by_id():
-    for member in Cards:
-        assert Cards(member.value) is member
+    for member in Condition.Cards:
+        assert Condition.Cards(member) is member
 
 
 def test_cards_unknown_id_raises():
     with pytest.raises(ValueError, match="is not a valid"):
-        Cards(4)
+        Condition.Cards(4)
 
 
 def test_comics_members():
-    assert len(Comics) == 10
-    assert Comics.UNGRADED.value == 1
-    assert Comics.GRADE_6_0.value == 2
-    assert Comics.GRADE_4_0.value == 3
-    assert Comics.GRADE_8_0.value == 5
-    assert Comics.GRADE_9_2.value == 6
-    assert Comics.GRADE_9_8.value == 7
-    assert Comics.GRADE_10_0.value == 8
-    assert Comics.GRADE_2_0.value == 9
-    assert Comics.GRADE_9_6.value == 10
-    assert Comics.GRADE_3_0.value == 13
+    assert len(Condition.Comics) == 10
+    assert Condition.Comics.UNGRADED == 1
+    assert Condition.Comics.GRADE_6_0 == 2
+    assert Condition.Comics.GRADE_4_0 == 3
+    assert Condition.Comics.GRADE_8_0 == 5
+    assert Condition.Comics.GRADE_9_2 == 6
+    assert Condition.Comics.GRADE_9_8 == 7
+    assert Condition.Comics.GRADE_10_0 == 8
+    assert Condition.Comics.GRADE_2_0 == 9
+    assert Condition.Comics.GRADE_9_6 == 10
+    assert Condition.Comics.GRADE_3_0 == 13
 
 
 def test_comics_lookup_by_id():
-    for member in Comics:
-        assert Comics(member.value) is member
+    for member in Condition.Comics:
+        assert Condition.Comics(member) is member
 
 
 def test_comics_unknown_id_raises():
     with pytest.raises(ValueError, match="is not a valid"):
-        Comics(4)
+        Condition.Comics(4)
 
 
 def test_coins_members():
-    assert len(Coins) == 10
-    assert Coins.UNGRADED.value == 1
-    assert Coins.AU_50_58.value == 2
-    assert Coins.VF_20_35.value == 3
-    assert Coins.MS_62.value == 5
-    assert Coins.MS_64.value == 6
-    assert Coins.MS_66.value == 7
-    assert Coins.F_12_15.value == 8
-    assert Coins.XF_40_45.value == 9
-    assert Coins.MS_60.value == 10
-    assert Coins.MS_61.value == 13
+    assert len(Condition.Coins) == 10
+    assert Condition.Coins.UNGRADED == 1
+    assert Condition.Coins.AU_50_58 == 2
+    assert Condition.Coins.VF_20_35 == 3
+    assert Condition.Coins.MS_62 == 5
+    assert Condition.Coins.MS_64 == 6
+    assert Condition.Coins.MS_66 == 7
+    assert Condition.Coins.F_12_15 == 8
+    assert Condition.Coins.XF_40_45 == 9
+    assert Condition.Coins.MS_60 == 10
+    assert Condition.Coins.MS_61 == 13
 
 
 def test_coins_lookup_by_id():
-    for member in Coins:
-        assert Coins(member.value) is member
+    for member in Condition.Coins:
+        assert Condition.Coins(member) is member
 
 
 def test_coins_unknown_id_raises():
     with pytest.raises(ValueError, match="is not a valid"):
-        Coins(4)
-
-
-def test_condition_categories():
-    assert len(Condition) == 4
-    assert Condition.VIDEOGAMES.value is VideoGames
-    assert Condition.CARDS.value is Cards
-    assert Condition.COMICS.value is Comics
-    assert Condition.COINS.value is Coins
+        Condition.Coins(4)

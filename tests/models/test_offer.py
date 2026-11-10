@@ -12,9 +12,9 @@ from tests.mocks.json import OFFER_JSON
 def test_offer_json_to_model():
     offer = Offer.model_validate_json(json.dumps(OFFER_JSON))
 
-    assert offer.offer_id == "smzksacsy5i2dsrddxsrlzsp6i"
+    assert offer.offer_id == "testofferid"
     assert offer.offer_status is OfferStatus.SOLD
-    assert offer.offer_url == "/offer/smzksacsy5i2dsrddxsrlzsp6i"
+    assert offer.offer_url == "/offer/testofferid"
     assert offer.id == 9307
     assert offer.product_name == "M.C. Kids"
     assert offer.console_name == "NES"
@@ -34,9 +34,9 @@ def test_offer_json_to_model():
 
 def test_offer_model_to_json():
     offer = Offer(
-        offer_id="smzksacsy5i2dsrddxsrlzsp6i",
+        offer_id="testofferid",
         offer_status=OfferStatus.SOLD,
-        offer_url="/offer/smzksacsy5i2dsrddxsrlzsp6i",
+        offer_url="/offer/testofferid",
         id=9307,
         product_name="M.C. Kids",
         console_name="NES",

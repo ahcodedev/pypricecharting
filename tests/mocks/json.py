@@ -15,9 +15,9 @@ BUYER_JSON = {
 
 
 OFFER_JSON = {
-    "offer-id": "smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-id": "testofferid",
     "offer-status": "sold",
-    "offer-url": "/offer/smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-url": "/offer/testofferid",
     "id": 9307,
     "product-name": "M.C. Kids",
     "console-name": "NES",
@@ -49,11 +49,22 @@ OFFER_PUBLISH_REQUEST_JSON = {
     "product": "6910",
     "price-max": 2500,
     "price-min": 1500,
-    "condition-id": "1",
+    "condition-id": 1,
     "cost-basis": 1000,
     "broken": "on",
     "sku": "ABC-123",
     "quantity": 2,
+}
+
+OFFERS_REQUEST_JSON = {
+    "status": "sold",
+    "buyer": "7cgdyu5ynzos3mxwhfh46xj3f4",
+    "console": "G17",
+    "condition-id": 1,
+    "genre": "Football",
+    "id": "6910",
+    "seller": "3mxwhfh46xj3f47cgdyu5ynzos",
+    "sort": "lowest-price",
 }
 
 
@@ -64,7 +75,7 @@ ERROR_JSON = {"status": "error", "error-message": "No such product"}
 OFFERS_JSON = {
     "status": "success",
     "offers": [
-        {"offer-id": "smzksacsy5i2dsrddxsrlzsp6i", "offer-status": "sold", "price": 1473},
+        {"offer-id": "testofferid", "offer-status": "sold", "price": 1473},
         {"offer-id": "vtdsww72uyslgooawzyyijsllm", "offer-status": "available", "price": 2500},
     ],
 }
@@ -100,9 +111,9 @@ OFFER_DETAILS_JSON = {
     "is-refunded": False,
     "is-shipped": True,
     "is-sold": True,
-    "offer-id": "smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-id": "testofferid",
     "offer-status": "sold",
-    "offer-url": "/offer/smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-url": "/offer/testofferid",
     "sku": "ABC-123",
     "tracking-number": "901234567890000",
     "start-time": "2017-10-01",
