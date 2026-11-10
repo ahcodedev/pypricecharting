@@ -11,8 +11,10 @@ from pypricecharting.error import ParameterError
 from pypricecharting.requests import OfferPublishRequestParams, OffersRequestParams
 from pypricecharting.responses import (
     OfferDetailsResponse,
+    OfferEndResponse,
     OfferFeedbackResponse,
     OfferPublishResponse,
+    OfferRefundResponse,
     OfferShipResponse,
     OffersResponse,
     ProductResponse,
@@ -26,8 +28,7 @@ from pypricecharting.types import Rating
 class AsyncPriceCharting:
     """Asynchronous PriceCharting API client.
 
-    Reuse one client for all requests and close it when done (`async with` or `aclose()`). The Marketplace
-    methods `offer_end` and `offer_refund` are not implemented yet and return `None`.
+    Reuse one client for all requests and close it when done (`async with` or `aclose()`).
     """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
@@ -261,10 +262,52 @@ class AsyncPriceCharting:
         response = await self._client.post(Route.Marketplace.OFFER_SHIP, data=data)
         return _parse(response, OfferShipResponse)
 
-    async def offer_end(self):
-        """End a marketplace offer."""
-        pass
+    async def offer_end(self, offer_id: str) -> OfferEndResponse:
+        """End a marketplace offer so it can no longer be purchased.
 
-    async def offer_refund(self):
-        """Refund a marketplace offer."""
-        pass
+        For a collection item, this removes it from the collection.
+
+        Args:
+            offer_id: The offer ID. Surrounding whitespace is stripped.
+
+        Returns:
+            The ended offer.
+
+        Raises:
+            ParameterError: If `offer_id` is empty or only whitespace.
+            APIError: If the API returns an error.
+
+        """
+        offer_id = offer_id.strip()
+
+        if len(offer_id) == 0:
+            raise ParameterError("Invalid parameter; offer_id was empty.")
+
+        response = await self._client.post(Route.Marketplace.OFFER_END, data={"offer-id": offer_id})
+        return _parse(response, OfferEndResponse)
+
+    async def offer_refund(self, offer_id: str) -> OfferRefundResponse:
+        """Refund a purchased marketplace offer.
+
+        Payment is returned immediately from the seller's PayPal account to the buyer.
+
+        Args:
+            offer_id: The offer ID. Surrounding whitespace is stripped.
+
+        Returns:
+            The refunded offer.
+
+        Raises:
+            ParameterError: If `offer_id` is empty or only whitespace.
+            APIError: If the API returns an error.
+
+        """
+        offer_id = offer_id.strip()
+
+        if len(offer_id) == 0:
+            raise ParameterError("Invalid parameter; offer_id was empty.")
+
+        response = await self._client.post(
+            Route.Marketplace.OFFER_REFUND, data={"offer-id": offer_id}
+        )
+        return _parse(response, OfferRefundResponse)
