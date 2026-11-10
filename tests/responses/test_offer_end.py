@@ -3,13 +3,7 @@ from datetime import date
 
 from pypricecharting.responses import OfferEndResponse
 from pypricecharting.types import Status
-
-OFFER_END_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "is-ended": True,
-    "ended-time": "2017-10-31",
-}
+from tests.mocks.json import OFFER_END_JSON
 
 
 def test_offer_end_json_to_model():

@@ -5,6 +5,7 @@ from pypricecharting.asyncpricecharting import AsyncPriceCharting
 from pypricecharting.error import APIError, ParameterError
 from pypricecharting.responses import ProductResponse
 from pypricecharting.route import BASE_URL
+from tests.mocks.json import PRODUCT_BASIC_JSON
 from tests.mocks.mock_pricecharting import mocked_async_client
 
 # Template tests: methods that are still placeholders only check they can be called.
@@ -125,25 +126,15 @@ async def test_async_with_closes_http_client_on_error():
     assert client._client.is_closed
 
 
-PRODUCT_JSON = {
-    "status": "success",
-    "id": "6910",
-    "product-name": "EarthBound",
-    "console-name": "Super Nintendo",
-    "loose-price": 17244,
-    "cib-price": 42995,
-    "new-price": 53000,
-    "release-date": "1995-06-05",
-}
-
-
 @pytest.mark.parametrize(
     ("kwargs", "param"),
     [({"id": "6910"}, "id"), ({"upc": "045496830434"}, "upc"), ({"q": "earthbound"}, "q")],
 )
 async def test_product(kwargs, param):
     requests: list[Request] = []
-    async with mocked_async_client(TOKEN, Response(200, json=PRODUCT_JSON), requests) as client:
+    async with mocked_async_client(
+        TOKEN, Response(200, json=PRODUCT_BASIC_JSON), requests
+    ) as client:
         product = await client.product(**kwargs)
 
     assert isinstance(product, ProductResponse)
@@ -176,7 +167,9 @@ async def test_product_raises_for_invalid_parameters():
 
 async def test_product_raises_for_multiple_parameters():
     requests: list[Request] = []
-    async with mocked_async_client(TOKEN, Response(200, json=PRODUCT_JSON), requests) as client:
+    async with mocked_async_client(
+        TOKEN, Response(200, json=PRODUCT_BASIC_JSON), requests
+    ) as client:
         with pytest.raises(
             ParameterError, match=r"Invalid parameters. Only one of id, upc, or q is allowed."
         ):

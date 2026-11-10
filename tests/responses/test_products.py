@@ -4,29 +4,7 @@ from datetime import date
 from pypricecharting.models import ProductSummary
 from pypricecharting.responses import ProductResponse, ProductsResponse
 from pypricecharting.types import Status
-
-PRODUCT_JSON = {
-    "status": "success",
-    "id": "6910",
-    "product-name": "EarthBound",
-    "console-name": "Super Nintendo",
-    "release-date": "1995-06-05",
-    "sales-volume": 120,
-    "loose-price": 17244,
-    "cib-price": 42995,
-    "new-price": 53000,
-    "bgs-10-price": 60000,
-    "condition-9-price": 9000,
-    "retail-loose-buy": 12000,
-}
-
-PRODUCTS_JSON = {
-    "status": "success",
-    "products": [
-        {"console-name": "Playstation", "id": "4801", "product-name": "Tactics Ogre"},
-        {"console-name": "GameBoy Advance", "id": "2611", "product-name": "Tactics Ogre"},
-    ],
-}
+from tests.mocks.json import PRODUCT_JSON, PRODUCTS_JSON
 
 
 def test_product_json_to_model():

@@ -3,13 +3,7 @@ from datetime import date
 
 from pypricecharting.responses import OfferRefundResponse
 from pypricecharting.types import Status
-
-OFFER_REFUND_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "is-refunded": True,
-    "refunded-time": "2017-10-31",
-}
+from tests.mocks.json import OFFER_REFUND_JSON
 
 
 def test_offer_refund_json_to_model():

@@ -5,13 +5,7 @@ from pydantic import ValidationError
 
 from pypricecharting.responses import OfferFeedbackResponse
 from pypricecharting.types import Rating, Status
-
-OFFER_FEEDBACK_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "rating": 2,
-    "comment": "Great buyer",
-}
+from tests.mocks.json import OFFER_FEEDBACK_JSON
 
 
 def test_offer_feedback_json_to_model():

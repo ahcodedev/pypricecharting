@@ -6,13 +6,7 @@ from httpx2 import Response
 from pypricecharting.error import APIError
 from pypricecharting.responses import OfferEndResponse, _parse
 from pypricecharting.types import Status
-
-OFFER_END_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "is-ended": True,
-    "ended-time": "2017-10-31",
-}
+from tests.mocks.json import OFFER_END_JSON
 
 
 def test_parse_success():

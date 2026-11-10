@@ -3,28 +3,11 @@ from datetime import date
 
 from pypricecharting.responses import OfferPublishResponse
 from pypricecharting.types import OfferStatus, Status
-
-OFFER_PUBLISH_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "offer-url": "/offer/vtdsww72uyslgooawzyyijsllm",
-    "offer-status": "available",
-    "product-name": "EarthBound",
-    "console-name": "Super Nintendo",
-    "condition-string": "Normal wear",
-    "include-string": "Game only",
-    "has-pictures": False,
-    "price": 2500,
-    "cost-basis": 1000,
-    "sku": "ABC-123",
-    "is-collection": False,
-    "quantity": 2,
-    "start-time": "2017-10-31",
-}
+from tests.mocks.json import OFFER_PUBLISH_RESPONSE_JSON
 
 
 def test_offer_publish_json_to_model():
-    response = OfferPublishResponse.model_validate_json(json.dumps(OFFER_PUBLISH_JSON))
+    response = OfferPublishResponse.model_validate_json(json.dumps(OFFER_PUBLISH_RESPONSE_JSON))
 
     assert response.status is Status.SUCCESS
     assert response.offer_id == "vtdsww72uyslgooawzyyijsllm"
@@ -64,4 +47,4 @@ def test_offer_publish_model_to_json():
 
     dumped = response.model_dump_json(by_alias=True, exclude_none=True)
 
-    assert json.loads(dumped) == OFFER_PUBLISH_JSON
+    assert json.loads(dumped) == OFFER_PUBLISH_RESPONSE_JSON

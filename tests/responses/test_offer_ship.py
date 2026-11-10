@@ -3,14 +3,7 @@ from datetime import date
 
 from pypricecharting.responses import OfferShipResponse
 from pypricecharting.types import Status
-
-OFFER_SHIP_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "is-shipped": True,
-    "shipped-time": "2017-10-31",
-    "tracking-number": "901234567890000",
-}
+from tests.mocks.json import OFFER_SHIP_JSON
 
 
 def test_offer_ship_json_to_model():

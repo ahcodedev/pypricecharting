@@ -4,48 +4,7 @@ from datetime import date
 from pypricecharting.models import Buyer
 from pypricecharting.responses import OfferDetailsResponse
 from pypricecharting.types import OfferStatus, Status
-
-OFFER_DETAILS_JSON = {
-    "status": "success",
-    "buyer": {
-        "buyer-email": "buyer@example.com",
-        "shipping-name": "Jane Doe",
-        "shipping-line1": "123 Main St",
-        "shipping-city": "Springfield",
-        "shipping-state": "IL",
-        "shipping-zip": "62701",
-        "shipping-country": "US",
-    },
-    "buyer-left-feedback": False,
-    "seller-left-feedback": True,
-    "id": 9307,
-    "product-name": "M.C. Kids",
-    "console-name": "NES",
-    "condition": "Normal wear",
-    "includes": "Game only",
-    "cost-basis": 500,
-    "price": 1473,
-    "max-price": 2000,
-    "min-price": 1000,
-    "shipping-premium": 0,
-    "has-pictures": True,
-    "is-collection": False,
-    "is-ended": True,
-    "is-price-descending": True,
-    "is-refunded": False,
-    "is-shipped": True,
-    "is-sold": True,
-    "offer-id": "smzksacsy5i2dsrddxsrlzsp6i",
-    "offer-status": "sold",
-    "offer-url": "/offer/smzksacsy5i2dsrddxsrlzsp6i",
-    "sku": "ABC-123",
-    "tracking-number": "901234567890000",
-    "start-time": "2017-10-01",
-    "sale-time": "2017-10-31",
-    "shipped-time": "2017-11-01",
-    "ended-time": "2017-10-31",
-    "refunded-time": "0001-01-01",
-}
+from tests.mocks.json import OFFER_DETAILS_JSON
 
 
 def test_offer_details_json_to_model():
