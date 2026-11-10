@@ -25,7 +25,7 @@ class OfferPublishRequestParams(PriceChartingModel):
     """ID of an existing offer to edit. The other identifiers create a new offer."""
     price_max: int
     """Price in pennies buyers pay, or the starting price when `price_min` is set."""
-    condition_id: str
+    condition_id: int
     """Condition ID for the product's category. See `types.Condition`."""
     add_to_collection: str | None = None
     """Add the item to your collection instead of listing it for sale."""

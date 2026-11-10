@@ -49,7 +49,7 @@ OFFER_PUBLISH_REQUEST_JSON = {
     "product": "6910",
     "price-max": 2500,
     "price-min": 1500,
-    "condition-id": "1",
+    "condition-id": 1,
     "cost-basis": 1000,
     "broken": "on",
     "sku": "ABC-123",

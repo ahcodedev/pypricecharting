@@ -14,7 +14,7 @@ def test_offer_publish_json_to_model():
     assert request.product == "6910"
     assert request.price_max == 2500
     assert request.price_min == 1500
-    assert request.condition_id == "1"
+    assert request.condition_id == 1
     assert request.cost_basis == 1000
     assert request.broken is State.ON
     assert request.sku == "ABC-123"
@@ -27,7 +27,7 @@ def test_offer_publish_model_to_json():
         product="6910",
         price_max=2500,
         price_min=1500,
-        condition_id="1",
+        condition_id=1,
         cost_basis=1000,
         broken=State.ON,
         sku="ABC-123",
@@ -41,4 +41,4 @@ def test_offer_publish_model_to_json():
 
 def test_offer_publish_model_raises():
     with pytest.raises(ValidationError, match="One of product, upc, asin, epid, or offer_id"):
-        OfferPublishRequestParams(price_max=2500, condition_id="1")
+        OfferPublishRequestParams(price_max=2500, condition_id=1)

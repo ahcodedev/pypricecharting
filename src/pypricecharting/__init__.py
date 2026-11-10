@@ -21,9 +21,6 @@ from pypricecharting.responses import (
     ProductsResponse,
 )
 from pypricecharting.types import (
-    Cards,
-    Coins,
-    Comics,
     Condition,
     Console,
     Genre,
@@ -32,16 +29,12 @@ from pypricecharting.types import (
     Rating,
     State,
     Status,
-    VideoGames,
 )
 
 __all__ = [
     "APIError",
     "AsyncPriceCharting",
     "Buyer",
-    "Cards",
-    "Coins",
-    "Comics",
     "Condition",
     "Console",
     "ErrorResponse",
@@ -70,5 +63,4 @@ __all__ = [
     "Rating",
     "State",
     "Status",
-    "VideoGames",
 ]
