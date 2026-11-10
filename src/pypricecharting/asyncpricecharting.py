@@ -11,6 +11,7 @@ from pypricecharting.error import ParameterError
 from pypricecharting.requests import OfferPublishRequestParams, OffersRequestParams
 from pypricecharting.responses import (
     OfferDetailsResponse,
+    OfferFeedbackResponse,
     OfferPublishResponse,
     OffersResponse,
     ProductResponse,
@@ -18,13 +19,14 @@ from pypricecharting.responses import (
     _parse,
 )
 from pypricecharting.route import BASE_URL, Route
+from pypricecharting.types import Rating
 
 
 class AsyncPriceCharting:
     """Asynchronous PriceCharting API client.
 
     Reuse one client for all requests and close it when done (`async with` or `aclose()`). The Marketplace
-    methods other than `offers`, `offer_details`, and `offer_publish` are not implemented yet and return `None`.
+    methods `offer_ship`, `offer_end`, and `offer_refund` are not implemented yet and return `None`.
     """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
@@ -198,9 +200,35 @@ class AsyncPriceCharting:
         )
         return _parse(response, OfferPublishResponse)
 
-    async def offer_feedback(self):
-        """Leave feedback on a marketplace offer."""
-        pass
+    async def offer_feedback(
+        self, offer_id: str, rating: Rating, comment: str | None = None
+    ) -> OfferFeedbackResponse:
+        """Leave feedback on a marketplace offer.
+
+        Args:
+            offer_id: The offer ID. Surrounding whitespace is stripped.
+            rating: How the transaction went.
+            comment: Text explaining the rating.
+
+        Returns:
+            The feedback left.
+
+        Raises:
+            ParameterError: If `offer_id` is empty or only whitespace.
+            APIError: If the API returns an error.
+
+        """
+        offer_id = offer_id.strip()
+
+        if len(offer_id) == 0:
+            raise ParameterError("Invalid parameter; offer_id was empty.")
+
+        data: dict[str, str | int] = {"offer-id": offer_id, "rating": rating.value}
+        if comment is not None:
+            data["comment"] = comment
+
+        response = await self._client.post(Route.Marketplace.OFFER_FEEDBACK, data=data)
+        return _parse(response, OfferFeedbackResponse)
 
     async def offer_ship(self):
         """Mark a marketplace offer as shipped."""

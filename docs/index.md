@@ -6,8 +6,8 @@ It provides a synchronous client, `PriceCharting`, and an asynchronous client,
 `AsyncPriceCharting`, both authenticated with a 40-character API token.
 
 Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`,
-`offer_details`, and `offer_publish` methods are implemented; the other Marketplace API methods
-are not yet.
+`offer_details`, `offer_publish`, and `offer_feedback` methods are implemented; the other
+Marketplace API methods are not yet.
 
 ## Authentication
 
@@ -122,6 +122,21 @@ with PriceCharting() as client:
 
 Set `offer_id` instead of a product identifier to edit an existing offer. Set `price_min` to make
 the offer a reverse auction that drops from `price_max` over 30 days.
+
+## Leaving feedback
+
+`offer_feedback` rates the other party of an offer. It takes the offer ID, a `Rating`, and an
+optional comment:
+
+```python
+from pypricecharting import PriceCharting, Rating
+
+with PriceCharting() as client:
+    feedback = client.offer_feedback("vtdsww72uyslgooawzyyijsllm", Rating.GREAT, "Great buyer")
+    print(feedback.offer_id, feedback.rating, feedback.comment)
+```
+
+An empty or whitespace-only offer ID raises `ParameterError`.
 
 ## Errors
 
