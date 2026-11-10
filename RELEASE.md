@@ -23,8 +23,25 @@ labels; other repository labels (e.g. `good first issue`, `question`) are ignore
   `*.md` adds `documentation`, and `uv.lock` adds `dependencies`. You can add or change them by hand
 * Merging to `main` updates a draft GitHub Release with the next version and notes
 * To release, run the **Release** workflow from the Actions tab. It bumps the version in
-  `pyproject.toml`/`uv.lock`, tags the release, and uploads build artifacts. The GitHub Release
-  notes are the changelog
-* The Release workflow commits the version bump as `Release vX.Y.Z` and pushes it straight to
-  `main` as `github-actions[bot]`, with no PR. The tag points at that commit. Branch protection
-  on `main` must allow this push, or the workflow fails before the release is published
+  `pyproject.toml`/`uv.lock`, builds the package, tags and publishes the GitHub Release with the
+  build attached, then publishes the same build to [PyPI](https://pypi.org/project/pypricecharting/).
+  The GitHub Release notes are the changelog
+* The workflow regenerates the draft's notes when it starts, so edit the notes after the release
+  is published, not before
+* The version bump is committed as `Release vX.Y.Z` and pushed straight to `main`, with no PR.
+  The tag points at that commit
+* The first release must resolve to a version above the `0.0.1` in `pyproject.toml`, or the
+  commit step fails with nothing to commit
+
+## Release setup
+
+The Release workflow depends on these settings outside the repository files:
+
+* **Deploy key**: the release commit is pushed over SSH with a write-access deploy key. Its
+  private half is the `RELEASE_DEPLOY_KEY` Actions secret. If `main` has a ruleset that requires
+  pull requests or status checks, **Deploy keys** must be on its bypass list
+* **PyPI trusted publisher**: PyPI trusts owner `ahcodedev`, repository `pypricecharting`,
+  workflow `release.yml`, and environment `pypi`. No PyPI token is stored. Renaming the workflow
+  file or the environment breaks publishing until PyPI is updated
+* **`pypi` environment**: the `publish-pypi` job runs in the `pypi` GitHub environment. If it has
+  required reviewers, the PyPI upload waits for approval after the GitHub Release is published
