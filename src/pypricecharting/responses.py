@@ -12,8 +12,8 @@ from pypricecharting.types import OfferStatus, Rating, Status
 class ErrorResponse(PriceChartingModel):
     """Error response from any endpoint
 
-    Returned with a 4xx or 5xx status code and `status: error`. The clients raise
-    `error.APIError` with the message instead of returning this model.
+    Returned with a 4xx or 5xx status code. The clients raise `error.APIError` instead of
+    returning it.
 
     https://www.pricecharting.com/api-documentation
     """
@@ -271,8 +271,7 @@ def _parse[M: PriceChartingModel](response: Response, model: type[M]) -> M:
 
     Raises:
         APIError: If the response is not JSON or has a non-2xx status code. The message is
-            the `error-message` from the body, parsed as an `ErrorResponse`, or the HTTP
-            reason phrase if the body has none.
+            the body's `error-message`, or the HTTP reason phrase.
 
     """
     try:

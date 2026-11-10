@@ -51,9 +51,14 @@ class OfferPublishRequest(PriceChartingModel):
 
     @model_validator(mode="after")
     def check_identifier(self) -> Self:
-        """Validate at least one identifier provided"""
+        """Check that at least one of `product`, `upc`, `asin`, `epid`, or `offer_id` is set.
+
+        Raises:
+            ValueError: If none of them is set.
+
+        """
         ids = [self.product, self.upc, self.asin, self.epid, self.offer_id]
         for id in ids:
             if id is not None:
                 return self
-        raise ValueError("One of product, upc, asin, epid, or offer_id not provided")
+        raise ValueError("One of product, upc, asin, epid, or offer_id is required")

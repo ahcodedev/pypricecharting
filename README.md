@@ -72,8 +72,8 @@ See [RELEASE.md](RELEASE.md) for how releases and release labels work.
 
 ## Usage
 
-The client is under development. `product` is implemented on both clients; the other API methods
-are not implemented yet.
+Under development: the Prices API methods (`product`, `products`) are implemented; the Marketplace
+API methods are not yet.
 
 ```python
 from pypricecharting import AsyncPriceCharting, PriceCharting
@@ -84,10 +84,11 @@ with PriceCharting("<40-character API token>") as client:
 
 async with AsyncPriceCharting("<40-character API token>") as client:
     game = await client.product(q="earthbound")
+    results = await client.products("chrono trigger")  # up to 20 matches
 ```
 
-If the token is omitted, it is read from the `PRICECHARTING_TOKEN` environment variable. See the
-docs site for errors and client options.
+Without a token argument, the token is read from `PRICECHARTING_TOKEN`. See the docs site for
+errors and client options.
 
 ## Supporting Files
 
