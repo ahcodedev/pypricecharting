@@ -6,7 +6,7 @@ It provides a synchronous client, `PriceCharting`, and an asynchronous client,
 `AsyncPriceCharting`, both authenticated with a 40-character API token.
 
 Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`
-method are implemented; the other Marketplace API methods are not yet.
+and `offer_details` methods are implemented; the other Marketplace API methods are not yet.
 
 ## Authentication
 
@@ -82,6 +82,23 @@ with PriceCharting() as client:
 ```
 
 The API allows the same `offers` request at most once every 5 minutes.
+
+## Offer details
+
+`offer_details` returns everything about one offer by its offer ID, including the buyer's shipping
+details once it has sold:
+
+```python
+from pypricecharting import PriceCharting
+
+with PriceCharting() as client:
+    details = client.offer_details("vtdsww72uyslgooawzyyijsllm")
+    print(details.product_name, details.offer_status, details.price)
+    if details.buyer is not None:
+        print(details.buyer.shipping_name, details.buyer.shipping_city)
+```
+
+An empty or whitespace-only offer ID raises `ParameterError`.
 
 ## Errors
 

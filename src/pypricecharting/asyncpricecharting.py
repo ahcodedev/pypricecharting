@@ -9,7 +9,13 @@ from pydantic import SecretStr
 from pypricecharting._auth import _REDACT_FILTER, _TokenAuth
 from pypricecharting.error import ParameterError
 from pypricecharting.requests import OffersRequestParams
-from pypricecharting.responses import OffersResponse, ProductResponse, ProductsResponse, _parse
+from pypricecharting.responses import (
+    OfferDetailsResponse,
+    OffersResponse,
+    ProductResponse,
+    ProductsResponse,
+    _parse,
+)
 from pypricecharting.route import BASE_URL, Route
 
 
@@ -17,7 +23,7 @@ class AsyncPriceCharting:
     """Asynchronous PriceCharting API client.
 
     Reuse one client for all requests and close it when done (`async with` or `aclose()`). The Marketplace
-    methods other than `offers` are not implemented yet and return `None`.
+    methods other than `offers` and `offer_details` are not implemented yet and return `None`.
     """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
@@ -148,9 +154,29 @@ class AsyncPriceCharting:
         )
         return _parse(response, OffersResponse)
 
-    async def offer_details(self):
-        """Get the details of a marketplace offer."""
-        pass
+    async def offer_details(self, offer_id: str) -> OfferDetailsResponse:
+        """Get the full details of one marketplace offer.
+
+        Args:
+            offer_id: The offer ID. Surrounding whitespace is stripped.
+
+        Returns:
+            The offer, including the buyer's shipping details once it has sold.
+
+        Raises:
+            ParameterError: If `offer_id` is empty or only whitespace.
+            APIError: If the API returns an error.
+
+        """
+        offer_id = offer_id.strip()
+
+        if len(offer_id) == 0:
+            raise ParameterError("Invalid parameter; offer_id was empty.")
+
+        response = await self._client.get(
+            Route.Marketplace.OFFER_DETAILS, params={"offer-id": offer_id}
+        )
+        return _parse(response, OfferDetailsResponse)
 
     async def offer_publish(self):
         """Publish a new marketplace offer."""
