@@ -17,8 +17,7 @@ Project supports local development and VSCode Dev container development
 
 ### Local Development Installation
 
-Note: Project uses `uv` (0.13.x, enforced by `required-version` in `pyproject.toml`) and `just` to
-manage project configuration and commands
+Note: Project uses `uv` and `just` to manage project configuration and commands
 
 * Install `just` - `brew install just`
 * Set up project - `just setup`
@@ -57,7 +56,7 @@ manage project configuration and commands
 * `just test`
 * `gitleaks` secret scan of staged changes
 
-## CI and Security
+## CI
 
 See [CI.md](https://github.com/ahcodedev/pypricecharting/blob/main/CI.md) for the GitHub Actions workflows and Dependabot setup.
 
@@ -102,15 +101,9 @@ Project contains an OpenAPI spec and a Bruno project for easy testing and mockin
 
 ## TODO / Investigate
 
-None of the client methods have been run against the live API yet. They are tested against a mock
-transport and the two specs only. Items to settle with real responses:
-
 * **Offer details price limits** - `OfferDetailsResponse` reads `price-max` and `price-min`, the
   names in the documentation's key table. If the API sends `max-price` and `min-price` instead,
-  `price_max` and `price_min` come back as `None` with no error. Check one real
-  `/api/offer-details` response
+  `price_max` and `price_min` come back as `None` with no error. Validate `/api/offer-details`
 * **Extra Marketplace keys** - `pending-reason`, `seller-id`, `image-url`, `best-competing-price`,
   `is-best-priced-offer` and `value` are only on `OfferDetailsResponse`. The documentation doesn't
   say which endpoint returns each one. If `/api/offers` returns any of them, add them to `Offer`
-* **Live test of every endpoint** - call each method once with a real token and compare the
-  response to its model
