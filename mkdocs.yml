@@ -1,5 +1,6 @@
 site_name: PyPriceCharting
 site_description: Python PriceCharting API Client
+site_url: https://ahcodedev.github.io/pypricecharting/
 repo_url: https://github.com/ahcodedev/pypricecharting
 repo_name: ahcodedev/pypricecharting
 strict: true
