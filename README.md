@@ -7,7 +7,7 @@
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 ![Python](https://img.shields.io/badge/python-3.15-blue)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/ahcodedev/pypricecharting/blob/main/LICENSE)
 
 PriceCharting API Client written in Python
 
@@ -58,7 +58,7 @@ manage project configuration and commands
 
 ## CI and Security
 
-See [CI.md](CI.md) for the GitHub Actions workflows and Dependabot setup.
+See [CI.md](https://github.com/ahcodedev/pypricecharting/blob/main/CI.md) for the GitHub Actions workflows and Dependabot setup.
 
 ## Documentation
 
@@ -68,7 +68,7 @@ workflow deploys the site to GitHub Pages on every push to `main`.
 
 ## Releases
 
-See [RELEASE.md](RELEASE.md) for how releases and release labels work.
+See [RELEASE.md](https://github.com/ahcodedev/pypricecharting/blob/main/RELEASE.md) for how releases and release labels work.
 
 ## Usage
 

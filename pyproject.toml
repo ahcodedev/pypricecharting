@@ -5,11 +5,28 @@ version = "0.0.1"
 requires-python = ">=3.15"
 license = "MIT"
 license-files = ["LICENSE"]
+readme = "README.md"
+authors = [
+    { name = "ahcodedev" },
+]
+keywords = ["pricecharting", "api", "client"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.15",
+    "Typing :: Typed",
+]
 
 dependencies = [
     "httpx2>=2.16.0",
     "pydantic>=2.14.3",
 ]
+
+[project.urls]
+Repository = "https://github.com/ahcodedev/pypricecharting"
+Issues = "https://github.com/ahcodedev/pypricecharting/issues"
+Documentation = "https://ahcodedev.github.io/pypricecharting/"
 
 [build-system]
 requires = ["uv_build>=0.13.7,<0.14.0"]
