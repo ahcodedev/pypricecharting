@@ -6,13 +6,8 @@ from httpx2 import Response
 from pypricecharting.error import APIError
 from pypricecharting.responses import OfferEndResponse, _parse
 from pypricecharting.types import Status
-
-OFFER_END_JSON = {
-    "status": "success",
-    "offer-id": "vtdsww72uyslgooawzyyijsllm",
-    "is-ended": True,
-    "ended-time": "2017-10-31",
-}
+from tests.mocks.json import OFFER_END_JSON
+from tests.mocks.mock_pricecharting import error_body
 
 
 def test_parse_success():
@@ -26,7 +21,7 @@ def test_parse_success():
 
 
 def test_parse_error_status_code():
-    body = {"status": "error", "error-message": "No such offer"}
+    body = error_body("No such offer")
 
     with pytest.raises(APIError, match="404: No such offer") as exc_info:
         _parse(Response(404, json=body), OfferEndResponse)
@@ -35,16 +30,16 @@ def test_parse_error_status_code():
     assert exc_info.value.status_code == 404
 
 
-def test_parse_error_status_with_success_code():
-    body = {"status": "error", "error-message": "Offer already ended"}
-
-    with pytest.raises(APIError, match="200: Offer already ended"):
-        _parse(Response(200, json=body), OfferEndResponse)
-
-
 def test_parse_error_without_message_uses_reason_phrase():
+    body = error_body()
+
     with pytest.raises(APIError, match="400: Bad Request"):
-        _parse(Response(400, json={"status": "error"}), OfferEndResponse)
+        _parse(Response(400, json=body), OfferEndResponse)
+
+
+def test_parse_error_body_without_status_uses_reason_phrase():
+    with pytest.raises(APIError, match="503: Service Unavailable"):
+        _parse(Response(503, json={"detail": "maintenance"}), OfferEndResponse)
 
 
 def test_parse_non_json_response():

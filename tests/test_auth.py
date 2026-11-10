@@ -7,8 +7,8 @@ from pydantic import SecretStr
 
 from pypricecharting import AsyncPriceCharting, PriceCharting
 from pypricecharting._auth import _REDACT_FILTER, _RedactTokenFilter, _TokenAuth
+from tests.mocks.mock_pricecharting import TOKEN
 
-TOKEN = "test-token-12345678901234567890123456789"
 URL = "https://example.com/api/product"
 
 

@@ -1,11 +1,26 @@
+from contextlib import suppress
 from datetime import date
 
 from httpx2 import Response
-from pydantic import Field
+from pydantic import Field, ValidationError
 
 from pypricecharting.error import APIError
 from pypricecharting.models import Buyer, Offer, PriceChartingModel, ProductSummary
 from pypricecharting.types import OfferStatus, Rating, Status
+
+
+class ErrorResponse(PriceChartingModel):
+    """Error response from any endpoint
+
+    Returned with a 4xx or 5xx status code and `status: error`. The clients raise
+    `error.APIError` with the message instead of returning this model.
+
+    https://www.pricecharting.com/api-documentation
+    """
+
+    status: Status
+    error_message: str | None = None
+    """Why the request failed."""
 
 
 class ProductResponse(ProductSummary):
@@ -255,8 +270,9 @@ def _parse[M: PriceChartingModel](response: Response, model: type[M]) -> M:
         The validated response model.
 
     Raises:
-        APIError: If the response is not JSON, has a non-2xx status code, or has
-            `status: error`.
+        APIError: If the response is not JSON or has a non-2xx status code. The message is
+            the `error-message` from the body, parsed as an `ErrorResponse`, or the HTTP
+            reason phrase if the body has none.
 
     """
     try:
@@ -266,8 +282,10 @@ def _parse[M: PriceChartingModel](response: Response, model: type[M]) -> M:
             response.reason_phrase or "Invalid JSON response", response.status_code
         ) from None
 
-    if not response.is_success or data.get("status") == "error":
-        message = data.get("error-message", response.reason_phrase or "Unknown error")
-        raise APIError(message, response.status_code)
+    if not response.is_success:
+        message = None
+        with suppress(ValidationError):
+            message = ErrorResponse.model_validate(data).error_message
+        raise APIError(message or response.reason_phrase or "Unknown error", response.status_code)
 
     return model.model_validate(data)

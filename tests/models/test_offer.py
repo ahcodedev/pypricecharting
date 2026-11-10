@@ -6,27 +6,7 @@ from pydantic import ValidationError
 
 from pypricecharting.models import Offer
 from pypricecharting.types import OfferStatus
-
-OFFER_JSON = {
-    "offer-id": "smzksacsy5i2dsrddxsrlzsp6i",
-    "offer-status": "sold",
-    "offer-url": "/offer/smzksacsy5i2dsrddxsrlzsp6i",
-    "id": 9307,
-    "product-name": "M.C. Kids",
-    "console-name": "NES",
-    "condition-string": "Normal wear",
-    "include-string": "Game only",
-    "price": 1473,
-    "is-available": False,
-    "is-sold": True,
-    "is-ended": True,
-    "is-shipped": False,
-    "sale-time": "2017-10-31",
-    "shipped-time": "0001-01-01",
-    "ended-time": "2017-10-31",
-    "cert-id": "5672930123",
-    "grade-co-id": 1,
-}
+from tests.mocks.json import OFFER_JSON
 
 
 def test_offer_json_to_model():

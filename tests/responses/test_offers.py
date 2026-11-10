@@ -3,14 +3,7 @@ import json
 from pypricecharting.models import Offer
 from pypricecharting.responses import OffersResponse
 from pypricecharting.types import OfferStatus, Status
-
-OFFERS_JSON = {
-    "status": "success",
-    "offers": [
-        {"offer-id": "smzksacsy5i2dsrddxsrlzsp6i", "offer-status": "sold", "price": 1473},
-        {"offer-id": "vtdsww72uyslgooawzyyijsllm", "offer-status": "available", "price": 2500},
-    ],
-}
+from tests.mocks.json import OFFERS_JSON
 
 
 def test_offers_json_to_model():

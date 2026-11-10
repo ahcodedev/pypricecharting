@@ -1,12 +1,7 @@
 import json
 
 from pypricecharting.models import ProductSummary
-
-PRODUCT_SUMMARY_JSON = {
-    "id": "4801",
-    "product-name": "Tactics Ogre",
-    "console-name": "Playstation",
-}
+from tests.mocks.json import PRODUCT_SUMMARY_JSON
 
 
 def test_product_summary_json_to_model():

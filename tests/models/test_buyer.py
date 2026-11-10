@@ -1,17 +1,7 @@
 import json
 
 from pypricecharting.models import Buyer
-
-BUYER_JSON = {
-    "buyer-email": "buyer@example.com",
-    "shipping-name": "Jane Doe",
-    "shipping-line1": "123 Main St",
-    "shipping-line2": "Apt 4",
-    "shipping-city": "Springfield",
-    "shipping-state": "IL",
-    "shipping-zip": "62701",
-    "shipping-country": "US",
-}
+from tests.mocks.json import BUYER_JSON
 
 
 def test_buyer_json_to_model():
