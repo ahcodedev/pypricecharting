@@ -8,14 +8,19 @@ from pydantic import SecretStr
 
 from pypricecharting._auth import _REDACT_FILTER, _TokenAuth
 from pypricecharting.error import ParameterError
-from pypricecharting.responses import ProductResponse, _parse
-from pypricecharting.route import BASE_URL, Prices
+from pypricecharting.responses import ProductResponse, ProductsResponse, _parse
+from pypricecharting.route import BASE_URL, Route
 
 
 class AsyncPriceCharting:
-    """Asynchronous PriceCharting API client."""
+    """Asynchronous PriceCharting API client.
+
+    Reuse one client for all requests and close it when done (`async with` or `aclose()`). The Marketplace API
+    methods are not implemented yet and return `None`.
+    """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
+    """Environment variable the token is read from when none is passed."""
 
     def __init__(
         self,
@@ -25,21 +30,16 @@ class AsyncPriceCharting:
     ):
         """Create a client authenticated with a PriceCharting API token.
 
-        The client adds a logging filter to the `httpx2` logger that replaces the token in
-        request URLs with `REDACTED`.
+        The token is redacted from `httpx2` request logs.
 
         Args:
             token: The 40-character PriceCharting API token. If omitted, it is read from the
                 `PRICECHARTING_TOKEN` environment variable.
-            base_url: The API base URL. Defaults to `route.BASE_URL`. Override it to send
-                requests to another server, such as a mock server in tests.
-            transport: The `httpx2` async transport that sends requests, such as
-                `httpx2.MockTransport` in tests. If omitted, the default `httpx2` transport is
-                used.
+            base_url: API base URL. Override it to use a mock server.
+            transport: Custom `httpx2` async transport, such as `httpx2.MockTransport` in tests.
 
         Raises:
-            ValueError: If no token is passed or set in the environment, or the token is not
-                40 characters.
+            ValueError: If the token is missing or not 40 characters.
 
         """
         if token is not None and len(token) != 40:
@@ -101,12 +101,30 @@ class AsyncPriceCharting:
         if len(params) > 1:
             raise ParameterError("Invalid parameters. Only one of id, upc, or q is allowed.")
 
-        response = await self._client.get(Prices.PRODUCT.value, params=params)
+        response = await self._client.get(Route.Prices.PRODUCT, params=params)
         return _parse(response, ProductResponse)
 
-    async def products(self):
-        """Search for products."""
-        pass
+    async def products(self, q: str) -> ProductsResponse:
+        """Search for products by title and/or console.
+
+        Args:
+            q: Full text search on title and/or console. Surrounding whitespace is stripped.
+
+        Returns:
+            Up to 20 matching products.
+
+        Raises:
+            ParameterError: If `q` is empty or only whitespace.
+            APIError: If the API returns an error.
+
+        """
+        q = q.strip()
+
+        if len(q) == 0:
+            raise ParameterError("Invalid parameter; Query string q was empty.")
+
+        response = await self._client.get(Route.Prices.PRODUCTS, params={"q": q})
+        return _parse(response, ProductsResponse)
 
     async def offers(self):
         """List marketplace offers."""

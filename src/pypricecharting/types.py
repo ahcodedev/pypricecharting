@@ -36,7 +36,7 @@ class Rating(Enum):
 
 @unique
 class State(Enum):
-    """State flag"""
+    """Value of a set form flag, such as an `OfferPublishRequest` condition tag"""
 
     ON = "on"
 

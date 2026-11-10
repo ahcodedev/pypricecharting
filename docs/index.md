@@ -2,15 +2,15 @@
 
 Python client for the [PriceCharting API](https://www.pricecharting.com/api-documentation).
 
-The package provides a synchronous client, `PriceCharting`, and an asynchronous client,
-`AsyncPriceCharting`. Both authenticate with a 40-character PriceCharting API token.
+It provides a synchronous client, `PriceCharting`, and an asynchronous client,
+`AsyncPriceCharting`, both authenticated with a 40-character API token.
 
-The client is under development: `product` is implemented on both clients, and the other API
-methods are not implemented yet.
+Under development: the Prices API methods (`product`, `products`) are implemented; the
+Marketplace API methods are not yet.
 
 ## Authentication
 
-Set your token in the `PRICECHARTING_TOKEN` environment variable and create a client without
+Set the token in the `PRICECHARTING_TOKEN` environment variable and create a client without
 arguments:
 
 ```python
@@ -20,20 +20,23 @@ with PriceCharting() as client:
     ...
 ```
 
-You can also pass the token directly:
+Or pass the token directly:
 
 ```python
 with PriceCharting("your-40-character-token") as client:
     ...
 ```
 
-The environment variable is recommended, because it keeps the token out of your code. Both
-clients raise `ValueError` if no token is found or the token is not 40 characters.
+Prefer the environment variable, which keeps the token out of your code. Both clients raise
+`ValueError` if the token is missing or not 40 characters.
+
+Reuse one client for all requests, and close it when done: with a `with` block, or by calling
+`close()` (`aclose()` for the async client).
 
 ## Getting a product
 
-`product` looks up a single product by exactly one of `id` (PriceCharting product ID), `upc`
-(UPC barcode), or `q` (full text search, best match only):
+`product` looks up a product by exactly one of `id` (PriceCharting product ID), `upc` (UPC
+barcode), or `q` (full text search, best match only):
 
 ```python
 from pypricecharting import AsyncPriceCharting, PriceCharting
@@ -46,20 +49,29 @@ async with AsyncPriceCharting() as client:
     game = await client.product(upc="045496830434")
 ```
 
-Prices are integer pennies, so `42995` is $429.95.
+Prices are integer pennies: `42995` is $429.95.
 
-Create one client and reuse it for all your requests, so they share a connection pool. Close it
-when you are done, either with a `with` block or by calling `close()` (`aclose()` for the async
-client).
+## Searching products
+
+`products` runs a full text search on title and/or console and returns up to 20 matches as
+`ProductSummary` objects. Pass a result's `id` to `product` for prices:
+
+```python
+with PriceCharting() as client:
+    results = client.products("chrono trigger super nintendo")
+    for summary in results.products:
+        print(summary.id, summary.product_name, summary.console_name)
+```
+
+An empty or whitespace-only query raises `ParameterError`.
 
 ## Errors
 
-All errors subclass `PriceChartingError` and can be imported from `pypricecharting`:
+All errors subclass `PriceChartingError`:
 
-- `ParameterError` (also a `ValueError`) is raised before any request is sent when a method gets
-  invalid parameters, such as `product()` with none or more than one of `id`, `upc`, and `q`.
-- `APIError` is raised when the API returns an error. It has the API's `message` and the HTTP
-  `status_code`.
+- `ParameterError` (also a `ValueError`): invalid method arguments, raised before any request is
+  sent.
+- `APIError`: the API returned an error. Has `message` and `status_code`.
 
 ```python
 from pypricecharting import APIError
@@ -72,12 +84,10 @@ except APIError as error:
 
 ## Client options
 
-Both clients accept two optional arguments, mainly for testing:
+Both clients take two optional arguments, mainly for testing:
 
-- `base_url` sends requests to another server, such as a local mock server. It defaults to
-  `https://www.pricecharting.com`.
-- `transport` replaces the `httpx2` transport that sends requests, such as
-  `httpx2.MockTransport`.
+- `base_url`: send requests to another server, such as a local mock server.
+- `transport`: a custom `httpx2` transport, such as `httpx2.MockTransport`.
 
 ```python
 from httpx2 import MockTransport, Response
@@ -90,21 +100,17 @@ client = PriceCharting(
 
 ## Imports
 
-Everything public can be imported from `pypricecharting` directly: the clients, the errors, the
-request and response models, the shared models (`ProductSummary`, `Offer`, `Buyer`), and the enums
-in `types` (`Condition`, `Console`, `Genre`, `Status`, and others):
+Everything public, including the clients, errors, models, and enums, can be imported from
+`pypricecharting` or from its own module (such as `pypricecharting.responses`):
 
 ```python
 from pypricecharting import Condition, PriceCharting, ProductResponse
 ```
 
-They can also be imported from their own modules, such as `pypricecharting.responses`.
-
 ## Security
 
-The PriceCharting API requires the token in the query string of `GET` requests, so it is part of
-the request URL. The clients redact it from the `httpx2` request log, which shows `t=REDACTED`
-instead. Anything outside this library that records URLs can still see the token, such as
-proxies or your own logging of requests.
+The API requires the token in the query string of `GET` requests. The clients redact it from the
+`httpx2` request log (`t=REDACTED`), but anything else that records URLs, such as proxies or your
+own request logging, can still see it.
 
-See the [API Reference](api/clients.md) for the classes and types in the package.
+See the [API Reference](api/clients.md) for all classes and types.
