@@ -1,12 +1,12 @@
 import pytest
 from httpx2 import Request, Response
 
-from pypricecharting.error import APIError
+from pypricecharting.error import APIError, ParameterError
 from pypricecharting.pricecharting import PriceCharting
 from pypricecharting.requests import OffersRequestParams, OffersStatus
-from pypricecharting.responses import OffersResponse
+from pypricecharting.responses import OfferDetailsResponse, OffersResponse
 from pypricecharting.types import Status
-from tests.mocks.json import OFFERS_JSON, OFFERS_REQUEST_JSON
+from tests.mocks.json import OFFER_DETAILS_JSON, OFFERS_JSON, OFFERS_REQUEST_JSON
 from tests.mocks.mock_pricecharting import TOKEN, error_body, mocked_client
 
 # Template tests: methods that are still placeholders only check they can be called.
@@ -53,9 +53,52 @@ def test_offers_raises_api_error():
 
 
 def test_offer_details():
-    client = PriceCharting(TOKEN)
-    assert client.offer_details() is None
-    client.close()
+    requests: list[Request] = []
+
+    with mocked_client(TOKEN, Response(200, json=OFFER_DETAILS_JSON), requests) as client:
+        response = client.offer_details("testofferid")
+
+    assert isinstance(response, OfferDetailsResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "testofferid"
+    assert response.buyer is not None
+    assert response.buyer.buyer_email == "buyer@example.com"
+
+    assert len(requests) == 1
+    assert requests[0].method == "GET"
+    assert requests[0].url.path == "/api/offer-details"
+    assert dict(requests[0].url.params) == {"offer-id": "testofferid", "t": TOKEN}
+
+
+def test_offer_details_strips_offer_id():
+    requests: list[Request] = []
+
+    with mocked_client(TOKEN, Response(200, json=OFFER_DETAILS_JSON), requests) as client:
+        client.offer_details("  testofferid  ")
+
+    assert requests[0].url.params["offer-id"] == "testofferid"
+
+
+@pytest.mark.parametrize("offer_id", ["", "   "])
+def test_offer_details_empty_offer_id_raises_parameter_error(offer_id: str):
+    requests: list[Request] = []
+
+    with (
+        mocked_client(TOKEN, Response(200, json=OFFER_DETAILS_JSON), requests) as client,
+        pytest.raises(ParameterError, match="offer_id was empty"),
+    ):
+        client.offer_details(offer_id)
+
+    assert requests == []
+
+
+def test_offer_details_raises_api_error():
+    requests: list[Request] = []
+    with (
+        mocked_client(TOKEN, Response(404, json=error_body("No such offer")), requests) as client,
+        pytest.raises(APIError, match="404: No such offer"),
+    ):
+        client.offer_details("missing")
 
 
 def test_offer_publish():

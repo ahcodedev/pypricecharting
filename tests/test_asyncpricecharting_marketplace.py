@@ -2,11 +2,11 @@ import pytest
 from httpx2 import Request, Response
 
 from pypricecharting.asyncpricecharting import AsyncPriceCharting
-from pypricecharting.error import APIError
+from pypricecharting.error import APIError, ParameterError
 from pypricecharting.requests import OffersRequestParams, OffersStatus
-from pypricecharting.responses import OffersResponse
+from pypricecharting.responses import OfferDetailsResponse, OffersResponse
 from pypricecharting.types import Status
-from tests.mocks.json import OFFERS_JSON, OFFERS_REQUEST_JSON
+from tests.mocks.json import OFFER_DETAILS_JSON, OFFERS_JSON, OFFERS_REQUEST_JSON
 from tests.mocks.mock_pricecharting import TOKEN, error_body, mocked_async_client
 
 # Template tests: methods that are still placeholders only check they can be called.
@@ -53,9 +53,56 @@ async def test_offers_raises_api_error():
 
 
 async def test_offer_details():
-    client = AsyncPriceCharting(TOKEN)
-    assert await client.offer_details() is None
-    await client.aclose()
+    requests: list[Request] = []
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_DETAILS_JSON), requests
+    ) as client:
+        response = await client.offer_details("testofferid")
+
+    assert isinstance(response, OfferDetailsResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "testofferid"
+    assert response.buyer is not None
+    assert response.buyer.buyer_email == "buyer@example.com"
+
+    assert len(requests) == 1
+    assert requests[0].method == "GET"
+    assert requests[0].url.path == "/api/offer-details"
+    assert dict(requests[0].url.params) == {"offer-id": "testofferid", "t": TOKEN}
+
+
+async def test_offer_details_strips_offer_id():
+    requests: list[Request] = []
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_DETAILS_JSON), requests
+    ) as client:
+        await client.offer_details("  testofferid  ")
+
+    assert requests[0].url.params["offer-id"] == "testofferid"
+
+
+@pytest.mark.parametrize("offer_id", ["", "   "])
+async def test_offer_details_empty_offer_id_raises_parameter_error(offer_id: str):
+    requests: list[Request] = []
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_DETAILS_JSON), requests
+    ) as client:
+        with pytest.raises(ParameterError, match="offer_id was empty"):
+            await client.offer_details(offer_id)
+
+    assert requests == []
+
+
+async def test_offer_details_raises_api_error():
+    requests: list[Request] = []
+    async with mocked_async_client(
+        TOKEN, Response(404, json=error_body("No such offer")), requests
+    ) as client:
+        with pytest.raises(APIError, match="404: No such offer"):
+            await client.offer_details("missing")
 
 
 async def test_offer_publish():
