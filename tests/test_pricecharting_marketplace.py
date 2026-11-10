@@ -6,10 +6,16 @@ from httpx2 import Request, Response
 from pypricecharting.error import APIError, ParameterError
 from pypricecharting.pricecharting import PriceCharting
 from pypricecharting.requests import OfferPublishRequestParams, OffersRequestParams, OffersStatus
-from pypricecharting.responses import OfferDetailsResponse, OfferPublishResponse, OffersResponse
-from pypricecharting.types import Condition, Status
+from pypricecharting.responses import (
+    OfferDetailsResponse,
+    OfferFeedbackResponse,
+    OfferPublishResponse,
+    OffersResponse,
+)
+from pypricecharting.types import Condition, Rating, Status
 from tests.mocks.json import (
     OFFER_DETAILS_JSON,
+    OFFER_FEEDBACK_JSON,
     OFFER_PUBLISH_REQUEST_JSON,
     OFFER_PUBLISH_RESPONSE_JSON,
     OFFERS_JSON,
@@ -158,9 +164,62 @@ def test_offer_publish_raises_api_error():
 
 
 def test_offer_feedback():
-    client = PriceCharting(TOKEN)
-    assert client.offer_feedback() is None
-    client.close()
+    requests: list[Request] = []
+
+    with mocked_client(TOKEN, Response(200, json=OFFER_FEEDBACK_JSON), requests) as client:
+        response = client.offer_feedback("vtdsww72uyslgooawzyyijsllm", Rating.GREAT, "Great buyer")
+
+    assert isinstance(response, OfferFeedbackResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "vtdsww72uyslgooawzyyijsllm"
+    assert response.rating == Rating.GREAT
+    assert response.comment == "Great buyer"
+
+    assert len(requests) == 1
+    assert requests[0].method == "POST"
+    assert requests[0].url.path == "/api/offer-feedback"
+    assert "t" not in requests[0].url.params
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "vtdsww72uyslgooawzyyijsllm",
+        "rating": "2",
+        "comment": "Great buyer",
+        "t": TOKEN,
+    }
+
+
+def test_offer_feedback_without_comment():
+    requests: list[Request] = []
+
+    with mocked_client(TOKEN, Response(200, json=OFFER_FEEDBACK_JSON), requests) as client:
+        client.offer_feedback("  testofferid  ", Rating.AWFUL)
+
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "testofferid",
+        "rating": "-2",
+        "t": TOKEN,
+    }
+
+
+@pytest.mark.parametrize("offer_id", ["", "   "])
+def test_offer_feedback_empty_offer_id_raises_parameter_error(offer_id: str):
+    requests: list[Request] = []
+
+    with (
+        mocked_client(TOKEN, Response(200, json=OFFER_FEEDBACK_JSON), requests) as client,
+        pytest.raises(ParameterError, match="offer_id was empty"),
+    ):
+        client.offer_feedback(offer_id, Rating.GOOD)
+
+    assert requests == []
+
+
+def test_offer_feedback_raises_api_error():
+    requests: list[Request] = []
+    with (
+        mocked_client(TOKEN, Response(404, json=error_body("No such offer")), requests) as client,
+        pytest.raises(APIError, match="404: No such offer"),
+    ):
+        client.offer_feedback("missing", Rating.OK)
 
 
 def test_offer_ship():

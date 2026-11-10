@@ -73,8 +73,8 @@ See [RELEASE.md](RELEASE.md) for how releases and release labels work.
 ## Usage
 
 Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`,
-`offer_details`, and `offer_publish` methods are implemented; the other Marketplace API methods
-are not yet.
+`offer_details`, `offer_publish`, and `offer_feedback` methods are implemented; the other
+Marketplace API methods are not yet.
 
 ```python
 from pypricecharting import AsyncPriceCharting, PriceCharting
