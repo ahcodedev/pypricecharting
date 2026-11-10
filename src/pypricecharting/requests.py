@@ -27,8 +27,8 @@ class OfferPublishRequestParams(PriceChartingModel):
     """Price in pennies buyers pay, or the starting price when `price_min` is set."""
     condition_id: int
     """Condition ID for the product's category. See `types.Condition`."""
-    add_to_collection: str | None = None
-    """Add the item to your collection instead of listing it for sale."""
+    add_to_collection: State | None = None
+    """Set to `State.ON` to add the item to your collection instead of listing it for sale."""
     cost_basis: int | None = None
     """What you paid for the item, in pennies."""
     description: str | None = None

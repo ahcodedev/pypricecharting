@@ -223,7 +223,7 @@ paths:
                     is-shipped: true
                     is-sold: true
                     offer-id: nw6asacmsbvvoq5yeyrkvzcdky
-                    offer-status: sold
+                    offer-status: available
                     offer-url: /offer/nw6asacmsbvvoq5yeyrkvzcdky
                     price: 6281
                     product-name: Shatterhand
@@ -257,7 +257,7 @@ paths:
               example:
                 status: success
                 buyer:
-                  buyer-email: buyer@example.com
+                  buyer-email: example@email.com
                   shipping-city: Anytown
                   shipping-country: United States
                   shipping-line1: 123 Smith St
@@ -279,12 +279,12 @@ paths:
                 is-refunded: false
                 is-shipped: true
                 is-sold: true
-                max-price: 12000
-                min-price: 10000
                 offer-id: vtdsww72uyslgooawzyyijsllm
                 offer-status: sold
                 offer-url: /offer/vtdsww72uyslgooawzyyijsllm
                 price: 11281
+                price-max: 12000
+                price-min: 10000
                 product-name: Mega Man 7
                 refunded-time: "0001-01-01"
                 sale-time: "2017-10-31"
@@ -307,7 +307,7 @@ paths:
       description: |-
         Publishes a new offer, or edits an existing one when `offer-id` is given.
 
-        Provide exactly one identifier: `product`, `upc`, `asin`, `epid`, or `offer-id`.
+        Either `product`, `upc`, `asin`, `epid` or `offer-id` is required.
 
         Condition tags (`broken`, `pristine`, `scratch`, `stickers`, `tear`, `writing`) are
         set to `on`. With no tags, the listing shows "Normal wear". `pristine` displays as
@@ -864,15 +864,26 @@ components:
           $ref: "#/components/schemas/Pennies"
         price:
           $ref: "#/components/schemas/Pennies"
-        max-price:
+        price-max:
           $ref: "#/components/schemas/Pennies"
-        min-price:
+          description: Maximum price entered, or the starting price of a reverse auction.
+        price-min:
           $ref: "#/components/schemas/Pennies"
+          description: Minimum price of a reverse auction. Not set for standard listings.
         shipping-premium:
           $ref: "#/components/schemas/Pennies"
           description: Extra paid by the buyer for international shipping.
+        best-competing-price:
+          $ref: "#/components/schemas/Pennies"
+          description: Lowest Marketplace price for the same product and includes.
+        value:
+          $ref: "#/components/schemas/Pennies"
+          description: Current value of a collection item.
         has-pictures:
           type: boolean
+        is-best-priced-offer:
+          type: boolean
+          description: Whether this is the lowest priced offer for the product.
         is-collection:
           type: boolean
         is-ended:
@@ -890,8 +901,17 @@ components:
           type: string
         offer-status:
           $ref: "#/components/schemas/OfferStatus"
+        pending-reason:
+          type: string
+          description: Why `offer-status` is `pending`.
         offer-url:
           type: string
+        image-url:
+          type: string
+          description: Relative URL of the offer's main image.
+        seller-id:
+          type: string
+          description: Seller user ID.
         sku:
           type: string
           description: Only returned to the seller.

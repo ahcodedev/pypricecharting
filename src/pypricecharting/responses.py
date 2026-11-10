@@ -143,25 +143,37 @@ class OfferDetailsResponse(PriceChartingModel):
     """What the seller paid for the item, in pennies."""
     price: int | None = None
     """Current price in pennies, or the sale price if sold. Includes any shipping premium."""
-    max_price: int | None = None
+    price_max: int | None = None
     """Listing price in pennies, or the starting price of a reverse auction."""
-    min_price: int | None = None
+    price_min: int | None = None
     """Lowest price in pennies of a reverse auction. Not set for standard listings."""
     shipping_premium: int | None = None
     """Extra the buyer paid for international shipping, in pennies."""
+    best_competing_price: int | None = None
+    """Lowest Marketplace price in pennies for the same product and includes."""
+    value: int | None = None
+    """Current value in pennies of a collection item."""
     has_pictures: bool | None = None
+    is_best_priced_offer: bool | None = None
+    """Whether this is the lowest priced offer for the product."""
     is_collection: bool | None = None
     """Whether the item is in the seller's collection instead of listed for sale."""
     is_ended: bool | None = None
     is_price_descending: bool | None = None
-    """Whether the offer is a reverse auction, dropping toward `min_price`."""
+    """Whether the offer is a reverse auction, dropping toward `price_min`."""
     is_refunded: bool | None = None
     is_shipped: bool | None = None
     is_sold: bool | None = None
     offer_id: str | None = None
     offer_status: OfferStatus | None = None
+    pending_reason: str | None = None
+    """Why `offer_status` is `pending`."""
     offer_url: str | None = None
     """Relative URL of the offer page. Prepend `route.BASE_URL` for a full link."""
+    image_url: str | None = None
+    """Relative URL of the offer's main image."""
+    seller_id: str | None = None
+    """Seller's user ID."""
     sku: str | None = None
     """Seller's internal SKU. Only returned to the seller."""
     tracking_number: str | None = None
