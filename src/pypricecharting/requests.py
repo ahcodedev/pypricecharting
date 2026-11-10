@@ -1,12 +1,13 @@
+from enum import StrEnum
 from typing import Self
 
 from pydantic import PositiveInt, model_validator
 
 from pypricecharting.models import PriceChartingModel
-from pypricecharting.types import State
+from pypricecharting.types import Console, Genre, State
 
 
-class OfferPublishRequest(PriceChartingModel):
+class OfferPublishRequestParams(PriceChartingModel):
     """api/offer-publish request
 
     Set one of `product`, `upc`, `asin`, or `epid` to create an offer, or `offer_id` to edit one.
@@ -62,3 +63,45 @@ class OfferPublishRequest(PriceChartingModel):
             if id is not None:
                 return self
         raise ValueError("One of product, upc, asin, epid, or offer_id is required")
+
+
+class OffersStatus(StrEnum):
+    """Offer status to filter api/offers by"""
+
+    AVAILABLE = "available"
+    SOLD = "sold"
+    ENDED = "ended"
+    COLLECTION = "collection"
+    """Tracked in the seller's collection, not listed for sale."""
+
+
+class OffersSort(StrEnum):
+    """Sort order for api/offers results"""
+
+    NAME = "name"
+    """Alphabetical."""
+    STARTS = "starts"
+    """Newest listings first."""
+    LOWEST_PRICE = "lowest-price"
+
+
+class OffersRequestParams(PriceChartingModel):
+    """api/offers request
+
+    Only `status` is required. The other fields narrow the results.
+
+    https://www.pricecharting.com/api-documentation#offers
+    """
+
+    status: OffersStatus
+    buyer: str | None = None
+    """Buyer user ID."""
+    console: Console | None = None
+    condition_id: int | None = None
+    """Condition ID for the product's category. See `types.Condition`."""
+    genre: Genre | None = None
+    id: str | None = None
+    """PriceCharting product ID."""
+    seller: str | None = None
+    """Seller user ID."""
+    sort: OffersSort | None = None

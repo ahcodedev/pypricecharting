@@ -56,6 +56,17 @@ OFFER_PUBLISH_REQUEST_JSON = {
     "quantity": 2,
 }
 
+OFFERS_REQUEST_JSON = {
+    "status": "sold",
+    "buyer": "7cgdyu5ynzos3mxwhfh46xj3f4",
+    "console": "G17",
+    "condition-id": 1,
+    "genre": "Football",
+    "id": "6910",
+    "seller": "3mxwhfh46xj3f47cgdyu5ynzos",
+    "sort": "lowest-price",
+}
+
 
 # Responses
 

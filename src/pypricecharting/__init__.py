@@ -2,7 +2,12 @@ from pypricecharting.asyncpricecharting import AsyncPriceCharting
 from pypricecharting.error import APIError, ParameterError, PriceChartingError
 from pypricecharting.models import Buyer, Offer, PriceChartingModel, ProductSummary
 from pypricecharting.pricecharting import PriceCharting
-from pypricecharting.requests import OfferPublishRequest
+from pypricecharting.requests import (
+    OfferPublishRequestParams,
+    OffersRequestParams,
+    OffersSort,
+    OffersStatus,
+)
 from pypricecharting.responses import (
     ErrorResponse,
     OfferDetailsResponse,
@@ -45,12 +50,15 @@ __all__ = [
     "OfferDetailsResponse",
     "OfferEndResponse",
     "OfferFeedbackResponse",
-    "OfferPublishRequest",
+    "OfferPublishRequestParams",
     "OfferPublishResponse",
     "OfferRefundResponse",
     "OfferShipResponse",
     "OfferStatus",
+    "OffersRequestParams",
     "OffersResponse",
+    "OffersSort",
+    "OffersStatus",
     "ParameterError",
     "PriceCharting",
     "PriceChartingError",
