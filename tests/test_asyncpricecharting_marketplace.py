@@ -1,12 +1,20 @@
+from urllib.parse import parse_qsl
+
 import pytest
 from httpx2 import Request, Response
 
 from pypricecharting.asyncpricecharting import AsyncPriceCharting
 from pypricecharting.error import APIError, ParameterError
-from pypricecharting.requests import OffersRequestParams, OffersStatus
-from pypricecharting.responses import OfferDetailsResponse, OffersResponse
-from pypricecharting.types import Status
-from tests.mocks.json import OFFER_DETAILS_JSON, OFFERS_JSON, OFFERS_REQUEST_JSON
+from pypricecharting.requests import OfferPublishRequestParams, OffersRequestParams, OffersStatus
+from pypricecharting.responses import OfferDetailsResponse, OfferPublishResponse, OffersResponse
+from pypricecharting.types import Condition, Status
+from tests.mocks.json import (
+    OFFER_DETAILS_JSON,
+    OFFER_PUBLISH_REQUEST_JSON,
+    OFFER_PUBLISH_RESPONSE_JSON,
+    OFFERS_JSON,
+    OFFERS_REQUEST_JSON,
+)
 from tests.mocks.mock_pricecharting import TOKEN, error_body, mocked_async_client
 
 # Template tests: methods that are still placeholders only check they can be called.
@@ -106,9 +114,55 @@ async def test_offer_details_raises_api_error():
 
 
 async def test_offer_publish():
-    client = AsyncPriceCharting(TOKEN)
-    assert await client.offer_publish() is None
-    await client.aclose()
+    requests: list[Request] = []
+    params = OfferPublishRequestParams.model_validate(OFFER_PUBLISH_REQUEST_JSON)
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_PUBLISH_RESPONSE_JSON), requests
+    ) as client:
+        response = await client.offer_publish(params)
+
+    assert isinstance(response, OfferPublishResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "vtdsww72uyslgooawzyyijsllm"
+    assert response.price == 2500
+
+    assert len(requests) == 1
+    assert requests[0].method == "POST"
+    assert requests[0].url.path == "/api/offer-publish"
+    assert "t" not in requests[0].url.params
+    assert requests[0].headers["Content-Type"] == "application/x-www-form-urlencoded"
+    expected = {key: str(value) for key, value in OFFER_PUBLISH_REQUEST_JSON.items()}
+    assert dict(parse_qsl(requests[0].content.decode())) == {**expected, "t": TOKEN}
+
+
+async def test_offer_publish_sends_only_set_parameters():
+    requests: list[Request] = []
+    params = OfferPublishRequestParams(
+        offer_id="testofferid", price_max=901, condition_id=Condition.VideoGames.LOOSE
+    )
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_PUBLISH_RESPONSE_JSON), requests
+    ) as client:
+        await client.offer_publish(params)
+
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "testofferid",
+        "price-max": "901",
+        "condition-id": "1",
+        "t": TOKEN,
+    }
+
+
+async def test_offer_publish_raises_api_error():
+    requests: list[Request] = []
+    params = OfferPublishRequestParams(product="0", price_max=901, condition_id=1)
+    async with mocked_async_client(
+        TOKEN, Response(400, json=error_body("No such product")), requests
+    ) as client:
+        with pytest.raises(APIError, match="400: No such product"):
+            await client.offer_publish(params)
 
 
 async def test_offer_feedback():

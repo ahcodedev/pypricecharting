@@ -8,9 +8,10 @@ from pydantic import SecretStr
 
 from pypricecharting._auth import _REDACT_FILTER, _TokenAuth
 from pypricecharting.error import ParameterError
-from pypricecharting.requests import OffersRequestParams
+from pypricecharting.requests import OfferPublishRequestParams, OffersRequestParams
 from pypricecharting.responses import (
     OfferDetailsResponse,
+    OfferPublishResponse,
     OffersResponse,
     ProductResponse,
     ProductsResponse,
@@ -23,7 +24,7 @@ class PriceCharting:
     """Synchronous PriceCharting API client.
 
     Reuse one client for all requests and close it when done (`with` or `close()`). The Marketplace
-    methods other than `offers` and `offer_details` are not implemented yet and return `None`.
+    methods other than `offers`, `offer_details`, and `offer_publish` are not implemented yet and return `None`.
     """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
@@ -175,9 +176,24 @@ class PriceCharting:
         response = self._client.get(Route.Marketplace.OFFER_DETAILS, params={"offer-id": offer_id})
         return _parse(response, OfferDetailsResponse)
 
-    def offer_publish(self):
-        """Publish a new marketplace offer."""
-        pass
+    def offer_publish(self, params: OfferPublishRequestParams) -> OfferPublishResponse:
+        """Publish a new marketplace offer, or edit an existing one.
+
+        Args:
+            params: The offer to publish. Set `offer_id` to edit an existing offer.
+
+        Returns:
+            The published offer.
+
+        Raises:
+            APIError: If the API returns an error.
+
+        """
+        response = self._client.post(
+            Route.Marketplace.OFFER_PUBLISH,
+            data=params.model_dump(mode="json", by_alias=True, exclude_none=True),
+        )
+        return _parse(response, OfferPublishResponse)
 
     def offer_feedback(self):
         """Leave feedback on a marketplace offer."""

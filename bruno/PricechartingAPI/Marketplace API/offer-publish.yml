@@ -80,25 +80,6 @@ http:
       - name: writing
         value: "on"
         disabled: true
-      - name: photo1
-        value: ""
-        description: JPG or PNG URL (photo1..photo6)
-        disabled: true
-      - name: photo2
-        value: ""
-        disabled: true
-      - name: photo3
-        value: ""
-        disabled: true
-      - name: photo4
-        value: ""
-        disabled: true
-      - name: photo5
-        value: ""
-        disabled: true
-      - name: photo6
-        value: ""
-        disabled: true
   auth: none
 
 settings:

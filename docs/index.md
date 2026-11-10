@@ -5,8 +5,9 @@ Python client for the [PriceCharting API](https://www.pricecharting.com/api-docu
 It provides a synchronous client, `PriceCharting`, and an asynchronous client,
 `AsyncPriceCharting`, both authenticated with a 40-character API token.
 
-Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`
-and `offer_details` methods are implemented; the other Marketplace API methods are not yet.
+Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`,
+`offer_details`, and `offer_publish` methods are implemented; the other Marketplace API methods
+are not yet.
 
 ## Authentication
 
@@ -99,6 +100,28 @@ with PriceCharting() as client:
 ```
 
 An empty or whitespace-only offer ID raises `ParameterError`.
+
+## Publishing an offer
+
+`offer_publish` lists an item for sale. It takes an `OfferPublishRequestParams`, which needs
+`price_max` (in pennies), `condition_id`, and one identifier (`product`, `upc`, `asin`, or `epid`):
+
+```python
+from pypricecharting import Condition, OfferPublishRequestParams, PriceCharting, State
+
+with PriceCharting() as client:
+    params = OfferPublishRequestParams(
+        product="9331",
+        price_max=901,
+        condition_id=Condition.VideoGames.LOOSE,
+        scratch=State.ON,
+    )
+    offer = client.offer_publish(params)
+    print(offer.offer_id, offer.offer_url, offer.price)
+```
+
+Set `offer_id` instead of a product identifier to edit an existing offer. Set `price_min` to make
+the offer a reverse auction that drops from `price_max` over 30 days.
 
 ## Errors
 
