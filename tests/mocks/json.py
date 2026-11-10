@@ -59,6 +59,8 @@ OFFER_PUBLISH_REQUEST_JSON = {
 
 # Responses
 
+ERROR_JSON = {"status": "error", "error-message": "No such product"}
+
 OFFERS_JSON = {
     "status": "success",
     "offers": [

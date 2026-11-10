@@ -5,7 +5,7 @@ from pypricecharting.asyncpricecharting import AsyncPriceCharting
 from pypricecharting.error import APIError, ParameterError
 from pypricecharting.responses import ProductResponse
 from tests.mocks.json import PRODUCT_BASIC_JSON
-from tests.mocks.mock_pricecharting import TOKEN, mocked_async_client
+from tests.mocks.mock_pricecharting import TOKEN, error_body, mocked_async_client
 
 # Template tests: methods that are still placeholders only check they can be called.
 # Replace their `is None` assertions once each method is implemented.
@@ -35,7 +35,7 @@ async def test_product(kwargs, param):
 
 
 async def test_product_raises_api_error():
-    body = {"status": "error", "error-message": "No such product"}
+    body = error_body("No such product")
     requests: list[Request] = []
     async with mocked_async_client(TOKEN, Response(404, json=body), requests) as client:
         with pytest.raises(APIError, match="404: No such product"):

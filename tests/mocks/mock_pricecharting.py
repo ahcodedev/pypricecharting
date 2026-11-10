@@ -2,6 +2,8 @@ from httpx2 import MockTransport, Request, Response
 
 from pypricecharting.asyncpricecharting import AsyncPriceCharting
 from pypricecharting.pricecharting import PriceCharting
+from pypricecharting.responses import ErrorResponse
+from pypricecharting.types import Status
 
 TOKEN = "test-token-12345678901234567890123456789"
 """A fake 40-character API token for tests."""
@@ -27,3 +29,10 @@ def mocked_async_client(
         return response
 
     return AsyncPriceCharting(token=token, transport=MockTransport(handler))
+
+
+def error_body(message: str | None = None) -> dict:
+    """Build an API error response body in JSON form, with an optional `error-message`."""
+    return ErrorResponse(status=Status.ERROR, error_message=message).model_dump(
+        mode="json", by_alias=True, exclude_none=True
+    )

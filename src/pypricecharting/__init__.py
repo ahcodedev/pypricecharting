@@ -4,6 +4,7 @@ from pypricecharting.models import Buyer, Offer, PriceChartingModel, ProductSumm
 from pypricecharting.pricecharting import PriceCharting
 from pypricecharting.requests import OfferPublishRequest
 from pypricecharting.responses import (
+    ErrorResponse,
     OfferDetailsResponse,
     OfferEndResponse,
     OfferFeedbackResponse,
@@ -38,6 +39,7 @@ __all__ = [
     "Comics",
     "Condition",
     "Console",
+    "ErrorResponse",
     "Genre",
     "Offer",
     "OfferDetailsResponse",

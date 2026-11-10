@@ -5,7 +5,7 @@ from pypricecharting.error import APIError, ParameterError
 from pypricecharting.pricecharting import PriceCharting
 from pypricecharting.responses import ProductResponse
 from tests.mocks.json import PRODUCT_BASIC_JSON
-from tests.mocks.mock_pricecharting import TOKEN, mocked_client
+from tests.mocks.mock_pricecharting import TOKEN, error_body, mocked_client
 
 # Template tests: methods that are still placeholders only check they can be called.
 # Replace their `is None` assertions once each method is implemented.
@@ -33,7 +33,7 @@ def test_product(kwargs, param):
 
 
 def test_product_raises_api_error():
-    body = {"status": "error", "error-message": "No such product"}
+    body = error_body("No such product")
     requests: list[Request] = []
     with (
         mocked_client(TOKEN, Response(404, json=body), requests) as client,
