@@ -10,6 +10,7 @@ from pypricecharting.responses import (
     OfferDetailsResponse,
     OfferFeedbackResponse,
     OfferPublishResponse,
+    OfferShipResponse,
     OffersResponse,
 )
 from pypricecharting.types import Condition, Rating, Status
@@ -18,6 +19,7 @@ from tests.mocks.json import (
     OFFER_FEEDBACK_JSON,
     OFFER_PUBLISH_REQUEST_JSON,
     OFFER_PUBLISH_RESPONSE_JSON,
+    OFFER_SHIP_JSON,
     OFFERS_JSON,
     OFFERS_REQUEST_JSON,
 )
@@ -237,9 +239,58 @@ async def test_offer_feedback_raises_api_error():
 
 
 async def test_offer_ship():
-    client = AsyncPriceCharting(TOKEN)
-    assert await client.offer_ship() is None
-    await client.aclose()
+    requests: list[Request] = []
+
+    async with mocked_async_client(TOKEN, Response(200, json=OFFER_SHIP_JSON), requests) as client:
+        response = await client.offer_ship("vtdsww72uyslgooawzyyijsllm", "901234567890000")
+
+    assert isinstance(response, OfferShipResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "vtdsww72uyslgooawzyyijsllm"
+    assert response.is_shipped is True
+    assert response.tracking_number == "901234567890000"
+
+    assert len(requests) == 1
+    assert requests[0].method == "POST"
+    assert requests[0].url.path == "/api/offer-ship"
+    assert "t" not in requests[0].url.params
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "vtdsww72uyslgooawzyyijsllm",
+        "tracking-number": "901234567890000",
+        "t": TOKEN,
+    }
+
+
+async def test_offer_ship_without_tracking_number():
+    requests: list[Request] = []
+
+    async with mocked_async_client(TOKEN, Response(200, json=OFFER_SHIP_JSON), requests) as client:
+        await client.offer_ship("  testofferid  ")
+
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "testofferid",
+        "t": TOKEN,
+    }
+
+
+@pytest.mark.parametrize("offer_id", ["", "   "])
+async def test_offer_ship_empty_offer_id_raises_parameter_error(offer_id: str):
+    requests: list[Request] = []
+
+    async with mocked_async_client(TOKEN, Response(200, json=OFFER_SHIP_JSON), requests) as client:
+        with pytest.raises(ParameterError, match="offer_id was empty"):
+            await client.offer_ship(offer_id)
+
+    assert requests == []
+
+
+async def test_offer_ship_raises_api_error():
+    requests: list[Request] = []
+    async with mocked_async_client(
+        TOKEN, Response(404, json=error_body("No such offer")), requests
+    ) as client:
+        with pytest.raises(APIError, match="404: No such offer"):
+            await client.offer_ship("missing")
 
 
 async def test_offer_end():

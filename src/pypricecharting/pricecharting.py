@@ -13,6 +13,7 @@ from pypricecharting.responses import (
     OfferDetailsResponse,
     OfferFeedbackResponse,
     OfferPublishResponse,
+    OfferShipResponse,
     OffersResponse,
     ProductResponse,
     ProductsResponse,
@@ -26,7 +27,7 @@ class PriceCharting:
     """Synchronous PriceCharting API client.
 
     Reuse one client for all requests and close it when done (`with` or `close()`). The Marketplace
-    methods `offer_ship`, `offer_end`, and `offer_refund` are not implemented yet and return `None`.
+    methods `offer_end` and `offer_refund` are not implemented yet and return `None`.
     """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
@@ -227,9 +228,33 @@ class PriceCharting:
         response = self._client.post(Route.Marketplace.OFFER_FEEDBACK, data=data)
         return _parse(response, OfferFeedbackResponse)
 
-    def offer_ship(self):
-        """Mark a marketplace offer as shipped."""
-        pass
+    def offer_ship(self, offer_id: str, tracking_number: str | None = None) -> OfferShipResponse:
+        """Mark a sold marketplace offer as shipped.
+
+        Args:
+            offer_id: The offer ID. Surrounding whitespace is stripped.
+            tracking_number: USPS, FedEx, UPS, or other tracking number. A valid one can earn
+                positive feedback if the buyer leaves none.
+
+        Returns:
+            The shipped offer.
+
+        Raises:
+            ParameterError: If `offer_id` is empty or only whitespace.
+            APIError: If the API returns an error.
+
+        """
+        offer_id = offer_id.strip()
+
+        if len(offer_id) == 0:
+            raise ParameterError("Invalid parameter; offer_id was empty.")
+
+        data = {"offer-id": offer_id}
+        if tracking_number is not None:
+            data["tracking-number"] = tracking_number
+
+        response = self._client.post(Route.Marketplace.OFFER_SHIP, data=data)
+        return _parse(response, OfferShipResponse)
 
     def offer_end(self):
         """End a marketplace offer."""

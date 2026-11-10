@@ -6,8 +6,8 @@ It provides a synchronous client, `PriceCharting`, and an asynchronous client,
 `AsyncPriceCharting`, both authenticated with a 40-character API token.
 
 Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`,
-`offer_details`, `offer_publish`, and `offer_feedback` methods are implemented; the other
-Marketplace API methods are not yet.
+`offer_details`, `offer_publish`, `offer_feedback`, and `offer_ship` methods are implemented;
+`offer_end` and `offer_refund` are not yet.
 
 ## Authentication
 
@@ -137,6 +137,23 @@ with PriceCharting() as client:
 ```
 
 An empty or whitespace-only offer ID raises `ParameterError`.
+
+## Marking an offer as shipped
+
+`offer_ship` tells PriceCharting a sold offer has shipped. It takes the offer ID and an optional
+tracking number:
+
+```python
+from pypricecharting import PriceCharting
+
+with PriceCharting() as client:
+    shipped = client.offer_ship("vtdsww72uyslgooawzyyijsllm", "901234567890000")
+    print(shipped.offer_id, shipped.is_shipped, shipped.shipped_time)
+```
+
+A valid tracking number can earn you positive feedback if the buyer leaves none, as long as it
+shows shipment within 3 days and delivery to the buyer's address. An empty or whitespace-only
+offer ID raises `ParameterError`.
 
 ## Errors
 
