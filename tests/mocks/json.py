@@ -15,9 +15,9 @@ BUYER_JSON = {
 
 
 OFFER_JSON = {
-    "offer-id": "smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-id": "testofferid",
     "offer-status": "sold",
-    "offer-url": "/offer/smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-url": "/offer/testofferid",
     "id": 9307,
     "product-name": "M.C. Kids",
     "console-name": "NES",
@@ -75,7 +75,7 @@ ERROR_JSON = {"status": "error", "error-message": "No such product"}
 OFFERS_JSON = {
     "status": "success",
     "offers": [
-        {"offer-id": "smzksacsy5i2dsrddxsrlzsp6i", "offer-status": "sold", "price": 1473},
+        {"offer-id": "testofferid", "offer-status": "sold", "price": 1473},
         {"offer-id": "vtdsww72uyslgooawzyyijsllm", "offer-status": "available", "price": 2500},
     ],
 }
@@ -111,9 +111,9 @@ OFFER_DETAILS_JSON = {
     "is-refunded": False,
     "is-shipped": True,
     "is-sold": True,
-    "offer-id": "smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-id": "testofferid",
     "offer-status": "sold",
-    "offer-url": "/offer/smzksacsy5i2dsrddxsrlzsp6i",
+    "offer-url": "/offer/testofferid",
     "sku": "ABC-123",
     "tracking-number": "901234567890000",
     "start-time": "2017-10-01",

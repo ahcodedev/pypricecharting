@@ -5,8 +5,8 @@ Python client for the [PriceCharting API](https://www.pricecharting.com/api-docu
 It provides a synchronous client, `PriceCharting`, and an asynchronous client,
 `AsyncPriceCharting`, both authenticated with a 40-character API token.
 
-Under development: the Prices API methods (`product`, `products`) are implemented; the
-Marketplace API methods are not yet.
+Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`
+method are implemented; the other Marketplace API methods are not yet.
 
 ## Authentication
 
@@ -64,6 +64,24 @@ with PriceCharting() as client:
 ```
 
 An empty or whitespace-only query raises `ParameterError`.
+
+## Listing offers
+
+`offers` lists marketplace offers. It takes an `OffersRequestParams`; only `status` is required,
+and the other fields narrow the results:
+
+```python
+from pypricecharting import Console, OffersRequestParams, OffersSort, OffersStatus, PriceCharting
+
+with PriceCharting() as client:
+    params = OffersRequestParams(
+        status=OffersStatus.AVAILABLE, console=Console.NES, sort=OffersSort.LOWEST_PRICE
+    )
+    for offer in client.offers(params).offers:
+        print(offer.offer_id, offer.product_name, offer.price)
+```
+
+The API allows the same `offers` request at most once every 5 minutes.
 
 ## Errors
 

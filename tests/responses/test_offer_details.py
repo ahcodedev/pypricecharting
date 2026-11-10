@@ -39,9 +39,9 @@ def test_offer_details_json_to_model():
     assert details.is_refunded is False
     assert details.is_shipped is True
     assert details.is_sold is True
-    assert details.offer_id == "smzksacsy5i2dsrddxsrlzsp6i"
+    assert details.offer_id == "testofferid"
     assert details.offer_status is OfferStatus.SOLD
-    assert details.offer_url == "/offer/smzksacsy5i2dsrddxsrlzsp6i"
+    assert details.offer_url == "/offer/testofferid"
     assert details.sku == "ABC-123"
     assert details.tracking_number == "901234567890000"
     assert details.start_time == date(2017, 10, 1)

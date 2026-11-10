@@ -8,15 +8,16 @@ from pydantic import SecretStr
 
 from pypricecharting._auth import _REDACT_FILTER, _TokenAuth
 from pypricecharting.error import ParameterError
-from pypricecharting.responses import ProductResponse, ProductsResponse, _parse
+from pypricecharting.requests import OffersRequestParams
+from pypricecharting.responses import OffersResponse, ProductResponse, ProductsResponse, _parse
 from pypricecharting.route import BASE_URL, Route
 
 
 class AsyncPriceCharting:
     """Asynchronous PriceCharting API client.
 
-    Reuse one client for all requests and close it when done (`async with` or `aclose()`). The Marketplace API
-    methods are not implemented yet and return `None`.
+    Reuse one client for all requests and close it when done (`async with` or `aclose()`). The Marketplace
+    methods other than `offers` are not implemented yet and return `None`.
     """
 
     TOKEN_KEY = "PRICECHARTING_TOKEN"
@@ -126,9 +127,26 @@ class AsyncPriceCharting:
         response = await self._client.get(Route.Prices.PRODUCTS, params={"q": q})
         return _parse(response, ProductsResponse)
 
-    async def offers(self):
-        """List marketplace offers."""
-        pass
+    async def offers(self, params: OffersRequestParams) -> OffersResponse:
+        """List marketplace offers matching the given filters.
+
+        The same request can be made at most once every 5 minutes.
+
+        Args:
+            params: Offer filters. Only `status` is required.
+
+        Returns:
+            The matching offers.
+
+        Raises:
+            APIError: If the API returns an error.
+
+        """
+        response = await self._client.get(
+            Route.Marketplace.OFFERS,
+            params=params.model_dump(mode="json", by_alias=True, exclude_none=True),
+        )
+        return _parse(response, OffersResponse)
 
     async def offer_details(self):
         """Get the details of a marketplace offer."""

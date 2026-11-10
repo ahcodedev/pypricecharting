@@ -11,7 +11,7 @@ def test_offers_json_to_model():
 
     assert response.status is Status.SUCCESS
     assert response.offers == [
-        Offer(offer_id="smzksacsy5i2dsrddxsrlzsp6i", offer_status=OfferStatus.SOLD, price=1473),
+        Offer(offer_id="testofferid", offer_status=OfferStatus.SOLD, price=1473),
         Offer(
             offer_id="vtdsww72uyslgooawzyyijsllm", offer_status=OfferStatus.AVAILABLE, price=2500
         ),
@@ -22,7 +22,7 @@ def test_offers_model_to_json():
     response = OffersResponse(
         status=Status.SUCCESS,
         offers=[
-            Offer(offer_id="smzksacsy5i2dsrddxsrlzsp6i", offer_status=OfferStatus.SOLD, price=1473),
+            Offer(offer_id="testofferid", offer_status=OfferStatus.SOLD, price=1473),
             Offer(
                 offer_id="vtdsww72uyslgooawzyyijsllm",
                 offer_status=OfferStatus.AVAILABLE,
