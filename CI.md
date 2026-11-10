@@ -1,4 +1,4 @@
-# CI and Security
+# CI
 
 | Workflow                                          | Runs on                      | Purpose                                        |
 | ------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
@@ -16,7 +16,6 @@
   a deploy key, and publishes the GitHub Release. `publish-pypi` then uploads the same build to
   PyPI with trusted publishing, from the `pypi` environment. See [RELEASE.md](RELEASE.md) for the
   settings it needs
-* GitHub Actions are pinned to full commit SHAs, with the version in a trailing comment
 * Dependabot (`.github/dependabot.yml`) checks weekly for updates to GitHub Actions and Python
   dependencies, and monthly for the dev container image and dev container features. New releases
   wait 7 days before an update is proposed. Dependabot PRs get the `dependencies` label
