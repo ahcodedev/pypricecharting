@@ -42,3 +42,20 @@ def test_offer_publish_model_to_json():
 def test_offer_publish_model_raises():
     with pytest.raises(ValidationError, match="One of product, upc, asin, epid, or offer_id"):
         OfferPublishRequestParams(price_max=2500, condition_id=1)
+
+
+def test_offer_publish_add_to_collection():
+    request = OfferPublishRequestParams(
+        product="6910", price_max=2500, condition_id=1, add_to_collection=State.ON
+    )
+
+    dumped = request.model_dump(mode="json", by_alias=True, exclude_none=True)
+
+    assert dumped["add-to-collection"] == "on"
+
+
+def test_offer_publish_add_to_collection_rejects_other_values():
+    with pytest.raises(ValidationError, match="add-to-collection"):
+        OfferPublishRequestParams.model_validate(
+            {"product": "6910", "price-max": 2500, "condition-id": 1, "add-to-collection": "yes"}
+        )

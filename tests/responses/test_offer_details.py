@@ -29,10 +29,13 @@ def test_offer_details_json_to_model():
     assert details.includes == "Game only"
     assert details.cost_basis == 500
     assert details.price == 1473
-    assert details.max_price == 2000
-    assert details.min_price == 1000
+    assert details.price_max == 2000
+    assert details.price_min == 1000
     assert details.shipping_premium == 0
+    assert details.best_competing_price == 1299
+    assert details.value == 1473
     assert details.has_pictures is True
+    assert details.is_best_priced_offer is False
     assert details.is_collection is False
     assert details.is_ended is True
     assert details.is_price_descending is True
@@ -41,7 +44,10 @@ def test_offer_details_json_to_model():
     assert details.is_sold is True
     assert details.offer_id == "testofferid"
     assert details.offer_status is OfferStatus.SOLD
+    assert details.pending_reason == ""
     assert details.offer_url == "/offer/testofferid"
+    assert details.image_url == "/images/offers/testofferid.jpg"
+    assert details.seller_id == "3mxwhfh46xj3f47cgdyu5ynzos"
     assert details.sku == "ABC-123"
     assert details.tracking_number == "901234567890000"
     assert details.start_time == date(2017, 10, 1)
@@ -63,3 +69,12 @@ def test_offer_details_without_buyer():
     details = OfferDetailsResponse.model_validate_json('{"status": "success"}')
 
     assert details.buyer is None
+
+
+def test_offer_details_pending_reason():
+    details = OfferDetailsResponse.model_validate_json(
+        '{"status": "success", "offer-status": "pending", "pending-reason": "Vacation hold"}'
+    )
+
+    assert details.offer_status is OfferStatus.PENDING
+    assert details.pending_reason == "Vacation hold"

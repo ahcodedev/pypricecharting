@@ -92,7 +92,7 @@ settings:
 docs: |-
   Publish a new offer, or edit an existing one when `offer-id` is given.
 
-  Provide one identifier: `product`, `upc`, `asin`, `epid`, or `offer-id`.
+  Either `product`, `upc`, `asin`, `epid` or `offer-id` is required.
 
   Condition tags (`broken`, `pristine`, `scratch`, `stickers`, `tear`, `writing`) are set to `on`. With no tags, the listing shows "Normal wear".
 

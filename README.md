@@ -72,9 +72,7 @@ See [RELEASE.md](RELEASE.md) for how releases and release labels work.
 
 ## Usage
 
-Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`,
-`offer_details`, `offer_publish`, `offer_feedback`, and `offer_ship` methods are implemented;
-`offer_end` and `offer_refund` are not yet.
+Both clients have a method for every Prices API and Marketplace API operation.
 
 ```python
 from pypricecharting import AsyncPriceCharting, PriceCharting
@@ -97,3 +95,18 @@ Project contains an OpenAPI spec and a Bruno project for easy testing and mockin
 
 * `./bruno` - Bruno project
 * `./open_api` - OpenAPI spec
+
+## TODO / Investigate
+
+None of the client methods have been run against the live API yet. They are tested against a mock
+transport and the two specs only. Items to settle with real responses:
+
+* **Offer details price limits** - `OfferDetailsResponse` reads `price-max` and `price-min`, the
+  names in the documentation's key table. If the API sends `max-price` and `min-price` instead,
+  `price_max` and `price_min` come back as `None` with no error. Check one real
+  `/api/offer-details` response
+* **Extra Marketplace keys** - `pending-reason`, `seller-id`, `image-url`, `best-competing-price`,
+  `is-best-priced-offer` and `value` are only on `OfferDetailsResponse`. The documentation doesn't
+  say which endpoint returns each one. If `/api/offers` returns any of them, add them to `Offer`
+* **Live test of every endpoint** - call each method once with a real token and compare the
+  response to its model

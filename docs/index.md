@@ -5,9 +5,7 @@ Python client for the [PriceCharting API](https://www.pricecharting.com/api-docu
 It provides a synchronous client, `PriceCharting`, and an asynchronous client,
 `AsyncPriceCharting`, both authenticated with a 40-character API token.
 
-Under development: the Prices API methods (`product`, `products`) and the Marketplace `offers`,
-`offer_details`, `offer_publish`, `offer_feedback`, and `offer_ship` methods are implemented;
-`offer_end` and `offer_refund` are not yet.
+Both clients have a method for every Prices API and Marketplace API operation.
 
 ## Authentication
 
@@ -154,6 +152,34 @@ with PriceCharting() as client:
 A valid tracking number can earn you positive feedback if the buyer leaves none, as long as it
 shows shipment within 3 days and delivery to the buyer's address. An empty or whitespace-only
 offer ID raises `ParameterError`.
+
+## Ending an offer
+
+`offer_end` ends an offer so it can no longer be purchased. For a collection item, it removes the
+item from the collection:
+
+```python
+from pypricecharting import PriceCharting
+
+with PriceCharting() as client:
+    ended = client.offer_end("vtdsww72uyslgooawzyyijsllm")
+    print(ended.offer_id, ended.is_ended, ended.ended_time)
+```
+
+## Refunding an offer
+
+`offer_refund` refunds a purchased offer. Payment is returned immediately from your PayPal account
+to the buyer:
+
+```python
+from pypricecharting import PriceCharting
+
+with PriceCharting() as client:
+    refunded = client.offer_refund("vtdsww72uyslgooawzyyijsllm")
+    print(refunded.offer_id, refunded.is_refunded, refunded.refunded_time)
+```
+
+Both raise `ParameterError` for an empty or whitespace-only offer ID.
 
 ## Errors
 

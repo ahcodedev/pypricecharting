@@ -29,7 +29,7 @@ docs: |-
   {
       "status":"success",
       "buyer": {                                        // buyer's shipping info
-          "buyer-email":"[email protected]",
+          "buyer-email":"example@email.com",
           "shipping-city":"Anytown",
           "shipping-country":"United States",
           "shipping-line1":"123 Smith St",
@@ -52,12 +52,12 @@ docs: |-
       "is-refunded":false,                              // has offer been refunded
       "is-shipped":true,                                // has offer been shipped
       "is-sold":true,                                   // has offer sold
-      "max-price":12000,
-      "min-price":10000,
       "offer-id":"vtdsww72uyslgooawzyyijsllm",          // unique offer ID
       "offer-status":"sold",
       "offer-url":"/offer/vtdsww72uyslgooawzyyijsllm",  // url for offer
       "price":11281,                                    // sales price.  $112.81
+      "price-max":12000,
+      "price-min":10000,
       "product-name":"Mega Man 7",
       "refunded-time":"0001-01-01",                     // date of refund.  zero value
       "sale-time":"2017-10-31",
@@ -73,7 +73,7 @@ docs: |-
   - `buyer`: `buyer-email`, `shipping-name`, `shipping-line1`, `shipping-line2`, `shipping-city`, `shipping-state`, `shipping-zip`, `shipping-country`
   - `buyer-left-feedback`, `seller-left-feedback`
   - `id`, `product-name`, `console-name`, `condition`, `includes`
-  - `price`, `max-price`, `min-price`, `cost-basis`, `shipping-premium`
-  - `has-pictures`, `is-collection`, `is-ended`, `is-price-descending`, `is-refunded`, `is-shipped`, `is-sold`
-  - `offer-id`, `offer-status`, `offer-url`, `sku`, `tracking-number`
+  - `price`, `price-max`, `price-min`, `cost-basis`, `shipping-premium`, `best-competing-price`, `value`
+  - `has-pictures`, `is-best-priced-offer`, `is-collection`, `is-ended`, `is-price-descending`, `is-refunded`, `is-shipped`, `is-sold`
+  - `offer-id`, `offer-status`, `pending-reason`, `offer-url`, `image-url`, `seller-id`, `sku`, `tracking-number`
   - `start-time`, `sale-time`, `shipped-time`, `ended-time`, `refunded-time`

@@ -3,30 +3,30 @@ from urllib.parse import parse_qsl
 import pytest
 from httpx2 import Request, Response
 
-from pypricecharting.asyncpricecharting import AsyncPriceCharting
 from pypricecharting.error import APIError, ParameterError
 from pypricecharting.requests import OfferPublishRequestParams, OffersRequestParams, OffersStatus
 from pypricecharting.responses import (
     OfferDetailsResponse,
+    OfferEndResponse,
     OfferFeedbackResponse,
     OfferPublishResponse,
+    OfferRefundResponse,
     OfferShipResponse,
     OffersResponse,
 )
 from pypricecharting.types import Condition, Rating, Status
 from tests.mocks.json import (
     OFFER_DETAILS_JSON,
+    OFFER_END_JSON,
     OFFER_FEEDBACK_JSON,
     OFFER_PUBLISH_REQUEST_JSON,
     OFFER_PUBLISH_RESPONSE_JSON,
+    OFFER_REFUND_JSON,
     OFFER_SHIP_JSON,
     OFFERS_JSON,
     OFFERS_REQUEST_JSON,
 )
 from tests.mocks.mock_pricecharting import TOKEN, error_body, mocked_async_client
-
-# Template tests: methods that are still placeholders only check they can be called.
-# Replace their `is None` assertions once each method is implemented.
 
 
 async def test_offers():
@@ -294,12 +294,86 @@ async def test_offer_ship_raises_api_error():
 
 
 async def test_offer_end():
-    client = AsyncPriceCharting(TOKEN)
-    assert await client.offer_end() is None
-    await client.aclose()
+    requests: list[Request] = []
+
+    async with mocked_async_client(TOKEN, Response(200, json=OFFER_END_JSON), requests) as client:
+        response = await client.offer_end("  vtdsww72uyslgooawzyyijsllm  ")
+
+    assert isinstance(response, OfferEndResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "vtdsww72uyslgooawzyyijsllm"
+    assert response.is_ended is True
+
+    assert len(requests) == 1
+    assert requests[0].method == "POST"
+    assert requests[0].url.path == "/api/offer-end"
+    assert "t" not in requests[0].url.params
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "vtdsww72uyslgooawzyyijsllm",
+        "t": TOKEN,
+    }
+
+
+@pytest.mark.parametrize("offer_id", ["", "   "])
+async def test_offer_end_empty_offer_id_raises_parameter_error(offer_id: str):
+    requests: list[Request] = []
+
+    async with mocked_async_client(TOKEN, Response(200, json=OFFER_END_JSON), requests) as client:
+        with pytest.raises(ParameterError, match="offer_id was empty"):
+            await client.offer_end(offer_id)
+
+    assert requests == []
+
+
+async def test_offer_end_raises_api_error():
+    requests: list[Request] = []
+    async with mocked_async_client(
+        TOKEN, Response(404, json=error_body("No such offer")), requests
+    ) as client:
+        with pytest.raises(APIError, match="404: No such offer"):
+            await client.offer_end("missing")
 
 
 async def test_offer_refund():
-    client = AsyncPriceCharting(TOKEN)
-    assert await client.offer_refund() is None
-    await client.aclose()
+    requests: list[Request] = []
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_REFUND_JSON), requests
+    ) as client:
+        response = await client.offer_refund("  vtdsww72uyslgooawzyyijsllm  ")
+
+    assert isinstance(response, OfferRefundResponse)
+    assert response.status == Status.SUCCESS
+    assert response.offer_id == "vtdsww72uyslgooawzyyijsllm"
+    assert response.is_refunded is True
+
+    assert len(requests) == 1
+    assert requests[0].method == "POST"
+    assert requests[0].url.path == "/api/offer-refund"
+    assert "t" not in requests[0].url.params
+    assert dict(parse_qsl(requests[0].content.decode())) == {
+        "offer-id": "vtdsww72uyslgooawzyyijsllm",
+        "t": TOKEN,
+    }
+
+
+@pytest.mark.parametrize("offer_id", ["", "   "])
+async def test_offer_refund_empty_offer_id_raises_parameter_error(offer_id: str):
+    requests: list[Request] = []
+
+    async with mocked_async_client(
+        TOKEN, Response(200, json=OFFER_REFUND_JSON), requests
+    ) as client:
+        with pytest.raises(ParameterError, match="offer_id was empty"):
+            await client.offer_refund(offer_id)
+
+    assert requests == []
+
+
+async def test_offer_refund_raises_api_error():
+    requests: list[Request] = []
+    async with mocked_async_client(
+        TOKEN, Response(404, json=error_body("No such offer")), requests
+    ) as client:
+        with pytest.raises(APIError, match="404: No such offer"):
+            await client.offer_refund("missing")
