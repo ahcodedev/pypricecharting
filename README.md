@@ -37,6 +37,7 @@ manage project configuration and commands
 
 * `just setup` - install tools and git hooks, then sync dependencies
 * `just sync` - sync project dependencies
+* `just build` - build the sdist and wheel into `dist/`
 * `just lint` - type check (`ty`), lint and format (`ruff`), and spellcheck (`codespell`). Fixes files in place
 * `just ci-lint` - same checks as `just lint`, without modifying files
 * `just test` - run unit tests
@@ -68,7 +69,10 @@ workflow deploys the site to GitHub Pages on every push to `main`.
 
 ## Releases
 
-See [RELEASE.md](https://github.com/ahcodedev/pypricecharting/blob/main/RELEASE.md) for how releases and release labels work.
+Releases are published to GitHub Releases and to [PyPI](https://pypi.org/project/pypricecharting/)
+by the `Release` workflow. See
+[RELEASE.md](https://github.com/ahcodedev/pypricecharting/blob/main/RELEASE.md) for how releases
+and release labels work.
 
 ## Usage
 
