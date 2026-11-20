@@ -3,7 +3,8 @@
 [![CI](https://github.com/ahcodedev/pypricecharting/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/python.yml)
 [![Docs](https://github.com/ahcodedev/pypricecharting/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/docs.yml)
 [![Security](https://github.com/ahcodedev/pypricecharting/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/ahcodedev/pypricecharting/actions/workflows/security.yml)
-[![gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks)
+[![betterleaks](https://img.shields.io/badge/protected%20by-betterleaks-blue)](https://github.com/betterleaks/betterleaks)
+[![zizmor](https://img.shields.io/badge/%F0%9F%8C%88-zizmor-white?labelColor=white)](https://zizmor.sh/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 ![Python](https://img.shields.io/badge/python-3.15-blue)
@@ -21,7 +22,7 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 
 * Install `just` - `brew install just`
 * Set up project - `just setup`
-  * Installs Homebrew dependencies (`gitleaks`, `just`, `uv`, `zizmor`)
+  * Installs Homebrew dependencies from the `Brewfile`
   * Installs `prek` git hooks
   * Syncs project dependencies
 
@@ -34,17 +35,25 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 
 ## Project Commands
 
-* `just setup` - install tools and git hooks, then sync dependencies
-* `just sync` - sync project dependencies
-* `just build` - build the sdist and wheel into `dist/`
-* `just lint` - type check (`ty`), lint and format (`ruff`), and spellcheck (`codespell`). Fixes files in place
-* `just ci-lint` - same checks as `just lint`, without modifying files
+* `just setup` - install Homebrew tools from the `Brewfile` and sync the project
+* `just sync` - sync project dependencies (all groups)
+* `just lint` - type check, lint, format, spell check (typos), and lint workflows (actionlint), YAML (yamllint),
+  and JSON (jq) (applies fixes)
+* `just ci-lint` - run the same checks without modifying files, except spell check (used in CI)
+* `just spellcheck` - check spelling with typos
 * `just test` - run unit tests
-* `just prek` - run all pre-commit hooks
-* `just git-leaks` - scan staged changes for secrets
+* `just coverage` - run unit tests with coverage (fails under 98%)
+* `just build` - build the sdist and wheel into `dist/`
+* `just audit` - check dependencies for known vulnerabilities with pip-audit
+* `just markdownlint` - lint Markdown files with markdownlint-cli2
+* `just docs-build` - build the docs site with Zensical (strict mode, output in `site/`)
+* `just docs-serve` - serve the docs locally with live reload
+* `just prek` - run pre-commit hooks via prek
+* `just betterleaks` - scan staged changes for secrets with betterleaks
 * `just zizmor` - audit GitHub Actions workflows for security issues
-* `just docs` - serve the docs site locally with live reload
-* `just docs-build` - build the docs site into `site/` in strict mode
+* `just set-github-labels` - remove GitHub's non-release default labels, then create or update the release labels
+  (for fresh repos, requires `gh auth login`)
+* `just update-template` - pull in the latest changes from the Copier template
 * `uv add {package}` - install a dependency
 
 ### Pre-commit Hooks
@@ -54,11 +63,15 @@ Note: Project uses `uv` and `just` to manage project configuration and commands
 * Built-in checks: trailing whitespace, end of file, large files, YAML, and JSON
 * `just ci-lint`
 * `just test`
-* `gitleaks` secret scan of staged changes
+* `just docs-build` (when `docs/`, `src/`, or `mkdocs.yml` change)
+* `just markdownlint` (when Markdown files change)
+* `just audit` (when `pyproject.toml` or `uv.lock` change)
+* `betterleaks` secret scan of staged changes
 
 ## CI
 
-See [CI.md](https://github.com/ahcodedev/pypricecharting/blob/main/CI.md) for the GitHub Actions workflows and Dependabot setup.
+See [CI.md](https://github.com/ahcodedev/pypricecharting/blob/main/CI.md) for the GitHub Actions workflows and
+Dependabot setup.
 
 ## Documentation
 

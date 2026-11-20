@@ -31,8 +31,11 @@ class AsyncPriceCharting:
     Reuse one client for all requests and close it when done (`async with` or `aclose()`).
     """
 
-    TOKEN_KEY = "PRICECHARTING_TOKEN"
+    TOKEN_KEY = "PRICECHARTING_TOKEN"  # noqa: S105 - an environment variable name, not a secret
     """Environment variable the token is read from when none is passed."""
+
+    TOKEN_LENGTH = 40
+    """Length of a PriceCharting API token."""
 
     def __init__(
         self,
@@ -54,13 +57,13 @@ class AsyncPriceCharting:
             ValueError: If the token is missing or not 40 characters.
 
         """
-        if token is not None and len(token) != 40:
+        if token is not None and len(token) != self.TOKEN_LENGTH:
             raise ValueError("PriceCharting API token is not 40 characters")
         token = token or os.environ.get(self.TOKEN_KEY)
 
         if token is None:
             raise ValueError("PriceCharting API token not found")
-        if len(token) != 40:
+        if len(token) != self.TOKEN_LENGTH:
             raise ValueError("PriceCharting API token is not 40 characters")
 
         self._token = SecretStr(token)

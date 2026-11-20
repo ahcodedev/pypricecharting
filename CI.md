@@ -1,12 +1,12 @@
 # CI
 
-| Workflow                                          | Runs on                      | Purpose                                        |
-| ------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
-| `python.yml`                                      | push / PR to `main`          | lint and unit tests                            |
-| `security.yml`                                    | push to `main`, all PRs      | zizmor workflow audit, gitleaks secret scan    |
-| `release-drafter.yml`                             | push to `main`, PRs          | update the draft release, label PRs            |
-| `release.yml`                                     | manual                       | publish a release to GitHub and PyPI           |
-| `docs.yml`                                        | push / PR to `main`, manual  | build docs, deploy to GitHub Pages (not PRs)   |
+| Workflow              | Runs on                     | Purpose                                                 |
+| --------------------- | --------------------------- | ------------------------------------------------------- |
+| `python.yml`          | push / PR to `main`         | lint, spell check, unit tests, docs build, markdownlint |
+| `security.yml`        | push to `main`, all PRs     | zizmor, betterleaks, pip-audit dependency audit         |
+| `release-drafter.yml` | push to `main`, PRs         | update the draft release, label PRs                     |
+| `release.yml`         | manual                      | publish a release to GitHub and PyPI                    |
+| `docs.yml`            | push / PR to `main`, manual | build docs, deploy to GitHub Pages (not PRs)            |
 
 * The docs site deploys through GitHub Pages, so the repo's Pages source must be set to
   **GitHub Actions**. PRs build the docs in strict mode without deploying

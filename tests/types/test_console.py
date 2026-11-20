@@ -5,7 +5,7 @@ from pypricecharting.types import Console
 # Source: https://www.pricecharting.com/api-documentation#console-ids
 
 
-def test_console_members():
+def test_console_members():  # noqa: PLR0915 - one assertion per enum member
     assert len(Console) == 237
     assert Console.PANASONIC_3DO.value == "G25"
     assert Console.ACTION_MAX.value == "G36545"

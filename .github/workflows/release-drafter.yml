@@ -46,5 +46,7 @@ jobs:
       with:
         mode: minimum
         count: 1
-        labels: "breaking, feature, enhancement, bug, fix, chore, ci, dependencies, documentation, refactor, skip-changelog"
+        labels: >-
+          breaking, feature, enhancement, bug, fix, chore, ci, dependencies, documentation, refactor,
+          skip-changelog
         use_api: true

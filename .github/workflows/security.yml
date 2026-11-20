@@ -8,9 +8,14 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   zizmor:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read # only needed for private or internal repos
       actions: read # only needed for private or internal repos
@@ -24,18 +29,47 @@ jobs:
         uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
         with:
           advanced-security: false
-  gitleaks:
-    runs-on: ubuntu-slim
+  pip-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
-      contents: read # needed for private repos
-      pull-requests: read # gitleaks lists the PR's commits to scan
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: false
+          version: ">=0.13,<0.14"
+      - name: Setup environment
+        run: |
+          uv tool install rust-just==1.59.0
+          just sync
+      - name: Audit dependencies
+        run: |
+          just audit
+  betterleaks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read # needed to check out a private repo
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-            persist-credentials: false
-            fetch-depth: 0
-      - name: Check gitleaks
-        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GITLEAKS_ENABLE_COMMENTS: false
+          persist-credentials: false
+          fetch-depth: 0
+      # betterleaks has no official action or PyPI package, so it is built from source
+      - name: Install Go
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: stable
+          cache: false
+      - name: Install betterleaks
+        run: |
+          go install github.com/betterleaks/betterleaks@v1.10.1
+      - name: Scan git history for secrets
+        run: |
+          "$(go env GOPATH)/bin/betterleaks" git --redact .
