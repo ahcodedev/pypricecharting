@@ -34,12 +34,12 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "codespell>=2.4.3",
+    "pip-audit>=2.10.1",
     "prek>=0.5.10",
     "pytest",
     "pytest-asyncio>=1.4.1.post1",
     "pytest-cov",
-    "ruff>=0.16.0",
+    "ruff>=0.17.3",
     "ty>=0.0.96",
 ]
 docs = [
@@ -47,28 +47,31 @@ docs = [
     "zensical>=0.1.0",
 ]
 
-[tool.codespell]
-# Product names used in PriceCharting's example data.
-ignore-words-list = "gameboy"
-# MkDocs build output.
-skip = "./site"
+[tool.coverage.run]
+source = ["src"]
+
+[tool.coverage.report]
+fail_under = 98
+show_missing = true
 
 [tool.pytest.ini_options]
-addopts = "--cov=src --cov-report=term-missing --cov-fail-under 98"
+testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
 line-length = 100
-target-version = "py315"
 
 [tool.ruff.lint]
-select = ["B", "E", "F", "W", "I", "N", "PT", "D", "UP", "RUF", "SIM"]  # Choose your rule categories
-ignore = ["D100", "D104", "D211", "D203", "D213", "D400", "D401", "D415"]
+select = ["B", "E", "F", "W", "I", "N", "PT", "D", "UP", "RUF", "SIM", "S", "C4", "PTH", "PL", "PERF"]  # Choose your rule categories
+ignore = ["D100", "D104", "D415"]
 extend-ignore = ["E501"]  # Line too long (handled by formatter)
 
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D"]  # Ignore docstring (D) errors in tests
+"tests/*" = ["D", "S101", "S105", "PLR2004"]  # Ignore docstring (D), assert (S101), fake token (S105), and magic value (PLR2004) errors in tests
 
 [tool.ruff.format]
 quote-style = "double"

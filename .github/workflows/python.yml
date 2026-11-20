@@ -8,9 +8,14 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   code-check-and-unit-test:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -24,11 +29,32 @@ jobs:
         version: ">=0.13,<0.14"
     - name: Setup environment
       run: |
-        uv tool install rust-just
+        uv tool install rust-just==1.59.0
+        uv tool install actionlint-py==1.7.12.25
+        uv tool install yamllint==1.38.0
         just sync
     - name: Lint
       run: |
         just ci-lint
+    - name: Spell check
+      uses: crate-ci/typos@276087d9a4f06398b3e04825487805e2d7375888 # v1.52.2
     - name: Unit tests
       run: |
-        just test
+        just coverage
+    - name: Docs build
+      run: |
+        just docs-build
+  markdownlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    # Keep markdownlint-cli2 in step with the VS Code markdownlint extension
+    - name: Markdownlint
+      uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
+      with:
+        globs: "**/*.md"

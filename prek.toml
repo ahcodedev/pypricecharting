@@ -7,12 +7,7 @@ repo = "builtin"
 hooks = [
     { id = "trailing-whitespace" },
     { id = "end-of-file-fixer" },
-    { id = "check-added-large-files" },
-    { id = "check-yaml" },
-    {
-        id = "check-json",
-        exclude = "devcontainer.json"
-    }
+    { id = "check-added-large-files" }
 ]
 
 [[repos]]
@@ -29,14 +24,45 @@ hooks = [
         id = "unit-tests",
         name = "unit tests",
         language = "system",
-        entry = "just test",
+        entry = "just coverage",
         pass_filenames = false
     },
     {
-        id = "git-leaks",
-        name = "git leaks",
+        id = "docs-build",
+        name = "docs build",
         language = "system",
-        entry = "gitleaks git --pre-commit --staged --redact",
+        entry = "just docs-build",
+        files = "^(docs/|src/|mkdocs\\.yml$)",
+        pass_filenames = false
+    },
+    {
+        id = "spellcheck",
+        name = "spell check",
+        language = "system",
+        entry = "just spellcheck",
+        pass_filenames = false
+    },
+    {
+        id = "markdownlint",
+        name = "markdownlint",
+        language = "system",
+        entry = "just markdownlint",
+        files = "\\.md$",
+        pass_filenames = false
+    },
+    {
+        id = "pip-audit",
+        name = "pip-audit",
+        language = "system",
+        entry = "just audit",
+        files = "^(pyproject\\.toml|uv\\.lock)$",
+        pass_filenames = false
+    },
+    {
+        id = "betterleaks",
+        name = "betterleaks",
+        language = "system",
+        entry = "just betterleaks",
         pass_filenames = false
     }
 ]
