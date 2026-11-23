@@ -1,7 +1,7 @@
 # See here for image contents: https://github.com/devcontainers/images/tree/main/src
 
 # Image version 3.3.2, Python 3.14, Debian bookworm. Tag and digest are updated by Dependabot.
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.15-bookworm@sha256:043d2843b67306fad755de26cbf3effaf680109268839c152fdb767d77c966d9
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.15-bookworm@sha256:b8311f1315c58c26a06e05fb44fe3f649e1df1ecceb86646d8b9f6a95c94ad07
 
 # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
 ARG NODE_VERSION="none"
